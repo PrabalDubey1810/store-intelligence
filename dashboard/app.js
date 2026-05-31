@@ -1,6 +1,6 @@
 // Vigillix Dashboard App Logic
 const urlParams = new URLSearchParams(window.location.search);
-let API_BASE = urlParams.get('api') || localStorage.getItem('vigillix_api_base') || "http://localhost:8000";
+let API_BASE = urlParams.get('api') || localStorage.getItem('vigillix_api_base') || "https://store-intelligence-api-6kve.onrender.com";
 let STORE_ID = urlParams.get('store') || localStorage.getItem('vigillix_store_id') || "ST1008";
 
 let trendsChart = null;
