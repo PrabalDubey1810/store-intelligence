@@ -1,0 +1,24 @@
+services:
+  # FastAPI Web Service
+  - type: web
+    name: store-intelligence-api
+    env: docker
+    dockerContext: .
+    dockerfilePath: app/Dockerfile
+    plan: free
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: store-intelligence-db
+          property: connectionString
+      - key: LOG_LEVEL
+        value: INFO
+      - key: WORKERS
+        value: 1
+
+databases:
+  # PostgreSQL Database
+  - name: store-intelligence-db
+    databaseName: store_intel
+    user: dbuser
+    plan: free
