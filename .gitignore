@@ -1,0 +1,39 @@
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Testing and coverage
+.pytest_cache/
+.coverage
+htmlcov/
+.coverage.*
+
+# IDEs
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Databases
+*.db
+*.sqlite3
+
+# Large models
+*.pt
+*.onnx
+
+# Data files (excluding configs)
+data/*.mp4
+data/*.avi
+data/*.mkv
+data/cam1_only/
