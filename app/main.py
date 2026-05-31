@@ -57,6 +57,11 @@ app.add_middleware(
 # ── Startup: load POS data ────────────────────────────────────────────────────
 @app.on_event("startup")
 def startup():
+    # Automatically create tables if they do not exist
+    from database import Base, engine
+    import models
+    Base.metadata.create_all(bind=engine)
+
     db = SessionLocal()
     try:
         csv_path = os.getenv("POS_CSV_PATH", "/app/data/pos_transactions.csv")
