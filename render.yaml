@@ -4,7 +4,7 @@ services:
     name: store-intelligence-api
     env: docker
     dockerContext: app
-    dockerfilePath: Dockerfile
+    dockerfilePath: app/Dockerfile
     plan: free
     envVars:
       - key: DATABASE_URL
