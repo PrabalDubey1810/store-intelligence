@@ -1,0 +1,70 @@
+
+
+services:
+
+  # ── PostgreSQL Database ──────────────────────────────────────────────────────
+  db:
+    image: postgres:15-alpine
+    container_name: store_intel_db
+    environment:
+      POSTGRES_DB:       store_intel
+      POSTGRES_USER:     admin
+      POSTGRES_PASSWORD: secret
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./app/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d store_intel"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    restart: unless-stopped
+
+  # ── FastAPI Intelligence API ─────────────────────────────────────────────────
+  api:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: store_intel_api
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL:    postgresql://admin:secret@db:5432/store_intel
+      POS_CSV_PATH:    /app/data/pos_transactions.csv
+      LOG_LEVEL:       INFO
+      WORKERS:         "2"
+    volumes:
+      # POS CSV + events.jsonl + updated store_layout.json
+      - ./data:/app/data:ro
+    restart: on-failure
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health')\""]
+      interval: 30s
+      timeout: 10s
+      start_period: 20s
+      retries: 3
+
+  # ── Web Dashboard (static file server) ──────────────────────────────────────
+  dashboard:
+    build:
+      context: ./dashboard
+      dockerfile: Dockerfile
+    container_name: store_intel_dashboard
+    ports:
+      - "3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: on-failure
+    volumes:
+      - ./dashboard:/app
+
+
+volumes:
+  pgdata:
+    name: store_intel_pgdata

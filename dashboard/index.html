@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Store Intelligence Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <!-- Chart.js for premium visualizations -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Lucide Icons for clean UI icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar">
+            <div class="logo-area">
+                <div class="logo-icon">
+                    <i data-lucide="eye"></i>
+                </div>
+                <span class="logo-text">Vigillix<span class="orange-dot">.</span></span>
+            </div>
+
+            <nav class="nav-menu">
+                <a href="#" class="nav-item active">
+                    <i data-lucide="layout-dashboard"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i data-lucide="video"></i>
+                    <span>Cameras</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i data-lucide="bar-chart-3"></i>
+                    <span>Analytics</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i data-lucide="alert-triangle"></i>
+                    <span>Anomalies</span>
+                    <span class="badge" id="anomaly-badge">0</span>
+                </a>
+                <a href="#" class="nav-item">
+                    <i data-lucide="settings"></i>
+                    <span>Settings</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="store-info-card">
+                    <i data-lucide="store" class="orange-text"></i>
+                    <div>
+                        <h4>Brigade Road</h4>
+                        <p>Store: ST1008</p>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1>Real-Time Store Intelligence</h1>
+                    <p class="subtitle">Live retail metrics powered by YOLOv8n & ByteTrack</p>
+                </div>
+                <div class="header-right">
+                    <div class="search-box">
+                        <i data-lucide="search"></i>
+                        <input type="text" placeholder="Search cameras or metrics...">
+                    </div>
+                    <div class="status-indicator-pill online">
+                        <span class="pulse-dot"></span>
+                        <span>API Connected</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Dashboard Grid -->
+            <div class="grid-layout">
+
+                <!-- Left Column (CCTV & Device Health) -->
+                <div class="col-left">
+                    <!-- Live Camera Card -->
+                    <div class="card camera-card">
+                        <div class="camera-header">
+                            <button class="icon-btn"><i data-lucide="arrow-left"></i></button>
+                            <span class="camera-title" id="current-camera-title">CCTV 01 - Main Entry</span>
+                            <button class="icon-btn"><i data-lucide="arrow-right"></i></button>
+                        </div>
+
+                        <!-- Live Video Mockup -->
+                        <div class="video-container">
+                            <div class="cctv-overlay-info">
+                                <div class="cctv-badge inline-flex">
+                                    <span class="status-dot green"></span>
+                                    <span>Live Feed</span>
+                                </div>
+                                <span class="ai-detection-tag animate-bounce" id="ai-detection-tag">
+                                    <i data-lucide="user-check"></i> Visitor Detected
+                                </span>
+                            </div>
+
+                            <!-- Bounding Boxes and Motion Simulation Canvas -->
+                            <canvas id="cctv-canvas" width="640" height="360"></canvas>
+
+                            <div class="camera-overlay-bottom">
+                                <div class="overlay-stats">
+                                    <div class="stat-pill">
+                                        <span class="label">Status:</span>
+                                        <span class="value green-text">Online</span>
+                                    </div>
+                                    <div class="stat-pill">
+                                        <span class="label">Resolution:</span>
+                                        <span class="value">1080p</span>
+                                    </div>
+                                    <div class="stat-pill">
+                                        <span class="label">FPS:</span>
+                                        <span class="value" id="cctv-fps">15 fps</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Camera Switcher -->
+                        <div class="camera-switcher">
+                            <button class="cam-tab active" data-cam="CAM_ENTRY_01">CAM 01 (Entry 1)</button>
+                            <button class="cam-tab" data-cam="CAM_FLOOR_01">CAM 02 (Floor 1)</button>
+                            <button class="cam-tab" data-cam="CAM_BILLING_01">CAM 03 (Billing)</button>
+                            <button class="cam-tab" data-cam="CAM_FLOOR_02">CAM 04 (Floor 2)</button>
+                            <button class="cam-tab" data-cam="CAM_ENTRY_02">CAM 05 (Entry 2)</button>
+                        </div>
+                    </div>
+
+                    <!-- Devices Health Card -->
+                    <div class="card devices-health-card">
+                        <div class="card-header">
+                            <h3>Devices Health Overview</h3>
+                            <a href="#" class="header-action"><i data-lucide="arrow-up-right"></i></a>
+                        </div>
+                        <div class="device-list">
+                            <div class="device-item">
+                                <div class="device-info">
+                                    <i data-lucide="video" class="device-icon"></i>
+                                    <div>
+                                        <h4>CCTV 01 - Main Entry</h4>
+                                        <span class="badge-status online">Active</span>
+                                    </div>
+                                </div>
+                                <div class="device-health">
+                                    <div class="progress-container">
+                                        <div class="progress-bar green-bar" style="width: 95%;"></div>
+                                    </div>
+                                    <span class="pct">95%</span>
+                                </div>
+                            </div>
+
+                            <div class="device-item">
+                                <div class="device-info">
+                                    <i data-lucide="video" class="device-icon"></i>
+                                    <div>
+                                        <h4>CCTV 02 - Main Floor</h4>
+                                        <span class="badge-status online">Active</span>
+                                    </div>
+                                </div>
+                                <div class="device-health">
+                                    <div class="progress-container">
+                                        <div class="progress-bar orange-bar" style="width: 82%;"></div>
+                                    </div>
+                                    <span class="pct">82%</span>
+                                </div>
+                            </div>
+
+                            <div class="device-item">
+                                <div class="device-info">
+                                    <i data-lucide="video" class="device-icon"></i>
+                                    <div>
+                                        <h4>CCTV 03 - Cash Counter</h4>
+                                        <span class="badge-status online">Active</span>
+                                    </div>
+                                </div>
+                                <div class="device-health">
+                                    <div class="progress-container">
+                                        <div class="progress-bar green-bar" style="width: 91%;"></div>
+                                    </div>
+                                    <span class="pct">91%</span>
+                                </div>
+                            </div>
+
+                            <div class="device-item">
+                                <div class="device-info">
+                                    <i data-lucide="database" class="device-icon"></i>
+                                    <div>
+                                        <h4>Postgres Database</h4>
+                                        <span class="badge-status online" id="db-status-badge">Connected</span>
+                                    </div>
+                                </div>
+                                <div class="device-health">
+                                    <div class="progress-container">
+                                        <div class="progress-bar green-bar" id="db-health-bar" style="width: 100%;">
+                                        </div>
+                                    </div>
+                                    <span class="pct" id="db-health-pct">100%</span>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Store Floor Plan Minimap Card -->
+                    <div class="card minimap-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Store Floor Plan</h3>
+                                <span class="minimap-subtitle">Brigade Road · ST1008 · Live Heatmap</span>
+                            </div>
+                            <span class="badge" id="minimap-confidence-badge">–</span>
+                        </div>
+
+                        <div class="floor-plan-wrapper">
+                            <svg id="store-floor-plan" viewBox="0 0 640 320" xmlns="http://www.w3.org/2000/svg">
+                                <defs>
+                                    <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                                        <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>
+                                    </pattern>
+                                </defs>
+                                <rect width="640" height="320" fill="url(#grid)"/>
+
+                                <!-- FOH: Front of House -->
+                                <polygon id="zone-FOH" class="floor-zone" data-zone="FOH" data-label="Front of House" data-billing="false" points="0,0 191,0 191,320 0,320"/>
+                                <text class="zone-label" x="95" y="155">F.O.H</text>
+                                <text class="zone-label" x="95" y="167" style="font-size:5px;fill:rgba(255,255,255,0.3)">Entry Area</text>
+
+                                <!-- TOP_AISLE -->
+                                <polygon id="zone-TOP_AISLE" class="floor-zone" data-zone="TOP_AISLE" data-label="Top Aisle" data-billing="false" points="191,0 534,0 534,88 191,88"/>
+                                <text class="zone-label" x="362" y="44">TOP AISLE</text>
+
+                                <!-- FRAGRANCE / NAIL -->
+                                <polygon id="zone-FRAGRANCE" class="floor-zone" data-zone="FRAGRANCE" data-label="Fragrance / Nail" data-billing="false" points="191,88 228,88 228,160 191,160"/>
+                                <text class="zone-label" x="209" y="120" style="font-size:5.5px">FRAG</text>
+
+                                <!-- Corridor gap between units (visual only) -->
+                                <rect x="228" y="88" width="95" height="72" fill="#ffffff" fill-opacity="0.015" stroke="#ffffff" stroke-opacity="0.04" stroke-width="0.5"/>
+                                <text class="zone-label" x="275" y="124" style="font-size:5px;fill:rgba(255,255,255,0.18)">GAP</text>
+
+                                <!-- MAKEUP -->
+                                <polygon id="zone-MAKEUP" class="floor-zone" data-zone="MAKEUP" data-label="Central Makeup" data-billing="false" points="323,88 391,88 391,160 323,160"/>
+                                <text class="zone-label" x="357" y="120" style="font-size:5.5px">MAKEUP</text>
+
+                                <!-- BOTTOM_AISLE -->
+                                <polygon id="zone-BOTTOM_AISLE" class="floor-zone" data-zone="BOTTOM_AISLE" data-label="Bottom Aisle" data-billing="false" points="191,160 534,160 534,246 191,246"/>
+                                <text class="zone-label" x="362" y="203">BOTTOM AISLE</text>
+
+                                <!-- Right side filler between central zone and cash counter -->
+                                <rect x="391" y="88" width="143" height="158" fill="#ffffff" fill-opacity="0.01" stroke="#ffffff" stroke-opacity="0.04" stroke-width="0.5"/>
+
+                                <!-- BOH: Back of House (top right) -->
+                                <polygon id="zone-BOH" class="floor-zone" data-zone="BOH" data-label="Back of House" data-billing="false" points="534,0 640,0 640,56 534,56"/>
+                                <text class="zone-label" x="587" y="28" style="font-size:5.5px">BOH</text>
+
+                                <!-- CASH_COUNTER: Billing zone -->
+                                <polygon id="zone-CASH_COUNTER" class="floor-zone billing-zone" data-zone="CASH_COUNTER" data-label="Cash Counter" data-billing="true" points="534,56 640,56 640,221 534,221"/>
+                                <text class="zone-label billing-label" x="587" y="130" style="font-size:5.5px">CASH</text>
+                                <text class="zone-label billing-label" x="587" y="141" style="font-size:5px">COUNTER</text>
+
+                                <!-- Bottom right filler -->
+                                <rect x="534" y="221" width="106" height="99" fill="#ffffff" fill-opacity="0.01" stroke="#ffffff" stroke-opacity="0.04" stroke-width="0.5"/>
+
+                                <!-- Entry threshold line -->
+                                <line class="entry-line" x1="191" y1="0" x2="191" y2="320"/>
+                                <text class="entry-label" transform="translate(186,315) rotate(-90)">ENTRY THRESHOLD</text>
+
+                                <!-- Camera markers -->
+                                <circle class="camera-dot" cx="8" cy="8" r="3" opacity="0.7"/>
+                                <text style="fill:rgba(139,92,246,0.7);font-family:Outfit;font-size:5px;font-weight:700" x="14" y="11">CAM 01</text>
+                                <circle class="camera-dot" cx="300" cy="8" r="3" opacity="0.7"/>
+                                <text style="fill:rgba(139,92,246,0.7);font-family:Outfit;font-size:5px;font-weight:700" x="306" y="11">CAM 02</text>
+                                <circle class="camera-dot" cx="587" cy="10" r="3" opacity="0.7"/>
+                                <text style="fill:rgba(139,92,246,0.7);font-family:Outfit;font-size:5px;font-weight:700" x="540" y="11">CAM 03</text>
+                                <circle class="camera-dot" cx="300" cy="312" r="3" opacity="0.7"/>
+                                <text style="fill:rgba(139,92,246,0.7);font-family:Outfit;font-size:5px;font-weight:700" x="306" y="315">CAM 04</text>
+                                <circle class="camera-dot" cx="8" cy="312" r="3" opacity="0.7"/>
+                                <text style="fill:rgba(139,92,246,0.7);font-family:Outfit;font-size:5px;font-weight:700" x="14" y="315">CAM 05</text>
+
+                                <!-- Live visitor blips injected by JS -->
+                                <g id="visitor-blips-layer"></g>
+                            </svg>
+
+                            <!-- Hover Tooltip -->
+                            <div class="zone-tooltip" id="zone-tooltip">
+                                <div class="zt-name" id="zt-name">–</div>
+                                <div class="zt-row">
+                                    <span class="zt-key">Traffic</span>
+                                    <span class="zt-val" id="zt-traffic">–</span>
+                                </div>
+                                <div class="zt-row">
+                                    <span class="zt-key">Avg Dwell</span>
+                                    <span class="zt-val" id="zt-dwell">–</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="minimap-footer">
+                            <div class="traffic-legend">
+                                <span class="legend-label">Low</span>
+                                <div class="legend-bar"></div>
+                                <span class="legend-label">High</span>
+                            </div>
+                            <div class="minimap-live-count">
+                                <span class="pulse-dot" style="background:#ff6b35;border-radius:50%;display:inline-block;animation:pulse-green 1.5s infinite"></span>
+                                <span id="minimap-blip-count">0 live</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column (Security Summary & Trends & Funnel) -->
+                <div class="col-right">
+
+                    <!-- Security Summary Grid -->
+                    <div class="metrics-grid">
+                        <!-- Metric Card 1: Unique Visitors -->
+                        <div class="card metric-card">
+                            <div class="metric-header">
+                                <span class="metric-title">Unique Visitors</span>
+                                <div class="metric-icon-bg orange-light">
+                                    <i data-lucide="users" class="orange-text"></i>
+                                </div>
+                            </div>
+                            <div class="metric-body">
+                                <h2 class="metric-value" id="val-visitors">0</h2>
+                                <span class="metric-trend up">
+                                    <i data-lucide="trending-up"></i>
+                                    <span>Live feed</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Metric Card 2: Conversion Rate -->
+                        <div class="card metric-card">
+                            <div class="metric-header">
+                                <span class="metric-title">Store Conversion</span>
+                                <div class="metric-icon-bg green-light">
+                                    <i data-lucide="shopping-bag" class="green-text"></i>
+                                </div>
+                            </div>
+                            <div class="metric-body">
+                                <h2 class="metric-value" id="val-conversion">0.0%</h2>
+                                <span class="metric-trend up">
+                                    <i data-lucide="trending-up"></i>
+                                    <span>Time-correlated</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Metric Card 3: Queue Depth -->
+                        <div class="card metric-card">
+                            <div class="metric-header">
+                                <span class="metric-title">Queue Depth</span>
+                                <div class="metric-icon-bg red-light" id="queue-icon-bg">
+                                    <i data-lucide="user-minus" class="red-text" id="queue-icon"></i>
+                                </div>
+                            </div>
+                            <div class="metric-body">
+                                <h2 class="metric-value" id="val-queue">0</h2>
+                                <span class="metric-trend" id="val-queue-status">
+                                    <span>Normal</span>
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Metric Card 4: Abandonment Rate -->
+                        <div class="card metric-card">
+                            <div class="metric-header">
+                                <span class="metric-title">Abandonment Rate</span>
+                                <div class="metric-icon-bg gray-light">
+                                    <i data-lucide="user-x" class="gray-text"></i>
+                                </div>
+                            </div>
+                            <div class="metric-body">
+                                <h2 class="metric-value" id="val-abandonment">0.0%</h2>
+                                <span class="metric-trend down">
+                                    <i data-lucide="trending-down"></i>
+                                    <span>Billing queue</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Activity Trends (Chart) -->
+                    <div class="card trends-card">
+                        <div class="card-header">
+                            <div class="header-titles">
+                                <h3>Activity Trends</h3>
+                                <p>Hourly unique store visitors & conversion rates</p>
+                            </div>
+                            <div class="header-actions">
+                                <select class="time-select">
+                                    <option>Live Stream</option>
+                                    <option>Daily</option>
+                                    <option>Weekly</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="trends-chart"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Anomalies & Conversion Funnel Grid -->
+                    <div class="bottom-split-grid">
+
+                        <!-- Conversion Funnel Card -->
+                        <div class="card funnel-card">
+                            <div class="card-header">
+                                <h3>Conversion Funnel</h3>
+                                <span class="badge">Session Unit</span>
+                            </div>
+                            <div class="funnel-body">
+                                <div class="funnel-stage-item" id="stage-entry">
+                                    <div class="stage-info">
+                                        <span class="stage-name">1. Entry Threshold</span>
+                                        <span class="stage-count">0 visitors</span>
+                                    </div>
+                                    <div class="stage-bar-outer">
+                                        <div class="stage-bar-inner orange-bg" style="width: 100%;"></div>
+                                    </div>
+                                    <span class="stage-drop">100% baseline</span>
+                                </div>
+
+                                <div class="funnel-stage-item" id="stage-zone">
+                                    <div class="stage-info">
+                                        <span class="stage-name">2. Product Zones Visit</span>
+                                        <span class="stage-count">0 visitors</span>
+                                    </div>
+                                    <div class="stage-bar-outer">
+                                        <div class="stage-bar-inner orange-bg" style="width: 0%;"></div>
+                                    </div>
+                                    <span class="stage-drop">-0% drop-off</span>
+                                </div>
+
+                                <div class="funnel-stage-item" id="stage-queue">
+                                    <div class="stage-info">
+                                        <span class="stage-name">3. Billing Counter Queue</span>
+                                        <span class="stage-count">0 visitors</span>
+                                    </div>
+                                    <div class="stage-bar-outer">
+                                        <div class="stage-bar-inner orange-bg" style="width: 0%;"></div>
+                                    </div>
+                                    <span class="stage-drop">-0% drop-off</span>
+                                </div>
+
+                                <div class="funnel-stage-item" id="stage-purchase">
+                                    <div class="stage-info">
+                                        <span class="stage-name">4. Successful Purchase</span>
+                                        <span class="stage-count">0 orders</span>
+                                    </div>
+                                    <div class="stage-bar-outer">
+                                        <div class="stage-bar-inner green-bg" style="width: 0%;"></div>
+                                    </div>
+                                    <span class="stage-drop">-0% drop-off</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Active Anomalies Card -->
+                        <div class="card anomalies-card">
+                            <div class="card-header">
+                                <h3>Active Anomalies</h3>
+                                <span class="badge warning-badge" id="anomaly-count-badge">0 Active</span>
+                            </div>
+                            <div class="anomalies-list" id="anomalies-list">
+                                <div class="no-anomalies">
+                                    <i data-lucide="shield-check" class="green-text"></i>
+                                    <p>System operational. No active anomalies detected.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+    <script>
+        // Initialize lucide icons
+        lucide.createIcons();
+    </script>
+</body>
+
+</html>

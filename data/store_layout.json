@@ -1,0 +1,121 @@
+{
+  "ST1008": {
+    "store_name": "Brigade Road, Bangalore",
+    "store_dimensions_mm": {
+      "total_width": 8241,
+      "total_height": 4020,
+      "note": "X: left-to-right (entrance to rear). Y: top-to-bottom (top brand counters to bottom brand counters)."
+    },
+    "scale_to_1920x1080": {
+      "scale_x": 0.23299,
+      "scale_y": 0.26866,
+      "comment": "Multiply any mm measurement by scale_x/scale_y to get pixel coordinate"
+    },
+    "zones": [
+      {
+        "zone_id": "FOH",
+        "display_name": "Front of House (Entry Area)",
+        "polygon": [
+          [0, 0],
+          [605, 0],
+          [605, 1080],
+          [0, 1080]
+        ],
+        "mm_bounds": { "x_start": 0, "x_end": 2594, "y_start": 0, "y_end": 4020 },
+        "camera_coverage": ["CAM_ENTRY_01", "CAM_ENTRY_02"],
+        "analytics": true
+      },
+      {
+        "zone_id": "TOP_AISLE",
+        "display_name": "Top Aisle Walkway",
+        "polygon": [
+          [605, 0],
+          [1246, 0],
+          [1246, 299],
+          [605, 299]
+        ],
+        "mm_bounds": { "x_start": 2594, "x_end": 5341, "y_start": 0, "y_end": 1110 },
+        "camera_coverage": ["CAM_FLOOR_01"],
+        "analytics": true
+      },
+      {
+        "zone_id": "FRAGRANCE",
+        "display_name": "Fragrance / Nail Unit",
+        "polygon": [
+          [605, 299],
+          [721, 299],
+          [721, 541],
+          [605, 541]
+        ],
+        "mm_bounds": { "x_start": 2594, "x_end": 3094, "y_start": 1110, "y_end": 2010 },
+        "mm_width": 500,
+        "mm_height": 900,
+        "camera_coverage": ["CAM_FLOOR_01"],
+        "analytics": true
+      },
+      {
+        "zone_id": "MAKEUP",
+        "display_name": "Central Makeup Unit",
+        "polygon": [
+          [1036, 299],
+          [1246, 299],
+          [1246, 541],
+          [1036, 541]
+        ],
+        "mm_bounds": { "x_start": 4441, "x_end": 5341, "y_start": 1110, "y_end": 2010 },
+        "mm_width": 900,
+        "mm_height": 900,
+        "camera_coverage": ["CAM_FLOOR_01", "CAM_FLOOR_02"],
+        "analytics": true
+      },
+      {
+        "zone_id": "BOTTOM_AISLE",
+        "display_name": "Bottom Aisle Walkway",
+        "polygon": [
+          [605, 541],
+          [1246, 541],
+          [1246, 840],
+          [605, 840]
+        ],
+        "mm_bounds": { "x_start": 2594, "x_end": 5341, "y_start": 2010, "y_end": 3120 },
+        "camera_coverage": ["CAM_FLOOR_01", "CAM_FLOOR_02"],
+        "analytics": true
+      },
+      {
+        "zone_id": "CASH_COUNTER",
+        "display_name": "Cash Counter / Billing",
+        "polygon": [
+          [1711, 191],
+          [1920, 191],
+          [1920, 756],
+          [1711, 756]
+        ],
+        "mm_bounds": { "x_start": 7341, "x_end": 8241, "y_start": 710, "y_end": 2810 },
+        "mm_width": 900,
+        "mm_height": 2100,
+        "camera_coverage": ["CAM_BILLING_01"],
+        "analytics": true,
+        "is_billing_zone": true
+      },
+      {
+        "zone_id": "BOH",
+        "display_name": "Back of House",
+        "polygon": [
+          [1711, 0],
+          [1920, 0],
+          [1920, 191],
+          [1711, 191]
+        ],
+        "mm_bounds": { "x_start": 7341, "x_end": 8241, "y_start": 0, "y_end": 710 },
+        "camera_coverage": ["CAM_FLOOR_02"],
+        "analytics": true
+      }
+    ],
+    "entry_line": {
+      "description": "Horizontal line in CCTV frame marking store entrance threshold",
+      "y_px": 130,
+      "camera_id": "CAM_ENTRY_01",
+      "margin_px": 20
+    }
+  }
+}
