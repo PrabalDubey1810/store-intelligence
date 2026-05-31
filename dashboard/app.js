@@ -1,6 +1,7 @@
 // Vigillix Dashboard App Logic
-const API_BASE = "http://localhost:8000";
-const STORE_ID = "ST1008";
+const urlParams = new URLSearchParams(window.location.search);
+let API_BASE = urlParams.get('api') || localStorage.getItem('vigillix_api_base') || "http://localhost:8000";
+let STORE_ID = urlParams.get('store') || localStorage.getItem('vigillix_store_id') || "ST1008";
 
 let trendsChart = null;
 let currentCamera = "CAM_ENTRY_01";
@@ -355,6 +356,46 @@ window.addEventListener('load', () => {
     // Poll data every 5 seconds
     setInterval(updateMetrics, 5000);
     setInterval(renderMinimap, 5000);
+
+    // Setup settings interactions
+    const settingsModal = document.getElementById('settings-modal');
+    const settingsNavBtn = document.getElementById('nav-settings');
+    const closeSettingsBtn = document.getElementById('close-settings-btn');
+    const cancelSettingsBtn = document.getElementById('cancel-settings-btn');
+    const saveSettingsBtn = document.getElementById('save-settings-btn');
+
+    const inputApi = document.getElementById('settings-api-url');
+    const inputStore = document.getElementById('settings-store-id');
+
+    if (settingsNavBtn && settingsModal) {
+        settingsNavBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            inputApi.value = API_BASE;
+            inputStore.value = STORE_ID;
+            settingsModal.classList.add('active');
+        });
+
+        const closeModal = () => settingsModal.classList.remove('active');
+
+        closeSettingsBtn.addEventListener('click', closeModal);
+        cancelSettingsBtn.addEventListener('click', closeModal);
+
+        saveSettingsBtn.addEventListener('click', () => {
+            const apiVal = inputApi.value.trim();
+            const storeVal = inputStore.value.trim();
+
+            if (apiVal) localStorage.setItem('vigillix_api_base', apiVal);
+            if (storeVal) localStorage.setItem('vigillix_store_id', storeVal);
+
+            closeModal();
+            window.location.reload(); // reload to apply configuration changes
+        });
+
+        // Close on overlay click
+        settingsModal.addEventListener('click', (e) => {
+            if (e.target === settingsModal) closeModal();
+        });
+    }
 });
 
 // ── Store Floor Plan Minimap ──────────────────────────────────────────────────

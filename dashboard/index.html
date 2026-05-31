@@ -45,7 +45,7 @@
                     <span>Anomalies</span>
                     <span class="badge" id="anomaly-badge">0</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="#" class="nav-item" id="nav-settings">
                     <i data-lucide="settings"></i>
                     <span>Settings</span>
                 </a>
@@ -488,6 +488,31 @@
 
             </div>
         </main>
+    </div>
+
+    <!-- Sleek Settings Modal -->
+    <div id="settings-modal" class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i data-lucide="settings" class="orange-text"></i> Settings</h3>
+                <button class="close-btn" id="close-settings-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group">
+                    <label for="settings-api-url">API Base URL</label>
+                    <input type="text" id="settings-api-url" placeholder="e.g. http://localhost:8000">
+                    <p class="input-help">The dashboard uses this address to fetch data from your FastAPI backend.</p>
+                </div>
+                <div class="input-group">
+                    <label for="settings-store-id">Store ID</label>
+                    <input type="text" id="settings-store-id" placeholder="e.g. ST1008">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-settings-btn">Cancel</button>
+                <button class="btn btn-primary" id="save-settings-btn">Save Changes</button>
+            </div>
+        </div>
     </div>
 
     <script src="app.js"></script>
