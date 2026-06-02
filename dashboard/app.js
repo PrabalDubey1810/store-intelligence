@@ -19,10 +19,10 @@ function initChart() {
     trendsChart = new Chart(ctx, {
         type: 'line',
         data: {
-            labels: ['10:00 AM', '11:00 AM', '12:00 PM', '01:00 PM', '02:00 PM', '03:00 PM', '04:00 PM'],
+            labels: ['10AM', '11AM', '12PM', '1PM', '2PM', '3PM', '4PM', '5PM', '6PM'],
             datasets: [{
                 label: 'Unique Visitors',
-                data: [5, 18, 32, 21, 26, 38, 42],
+                data: [3, 8, 14, 11, 16, 22, 18, 25, 12],
                 borderColor: '#ff6b35',
                 borderWidth: 3,
                 backgroundColor: gradient,
