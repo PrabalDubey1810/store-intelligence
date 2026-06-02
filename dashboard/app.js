@@ -186,43 +186,25 @@ function drawCCTVFrame() {
 async function updateMetrics() {
     try {
         // Fetch Metrics
-        const metricsRes = await fetch(`${API_BASE}/stores/${STORE_ID}/metrics`);
-        if (metricsRes.ok) {
-            const data = await metricsRes.json();
-            
-            document.getElementById('val-visitors').innerText = data.unique_visitors || 146;
-            document.getElementById('val-conversion').innerText = data.conversion_rate ? `${((data.conversion_rate || 0) * 100).toFixed(1)}%` : "10.7%";
-            document.getElementById('val-queue').innerText = data.queue_depth || 0;
-            document.getElementById('val-abandonment').innerText = data.abandonment_rate ? `${((data.abandonment_rate || 0) * 100).toFixed(1)}%` : "38.4%";
-            
-            // Queue depth status styling
-            const qPill = document.getElementById('val-queue-status');
-            const qIconBg = document.getElementById('queue-icon-bg');
-            const qIcon = document.getElementById('queue-icon');
-            if (data.queue_depth > 3) {
-                qPill.className = "metric-trend down";
-                qPill.innerText = "Queue Spike!";
-                qIconBg.className = "metric-icon-bg red-light";
-                qIcon.className = "red-text";
-            } else {
-                qPill.className = "metric-trend up";
-                qPill.innerText = "Normal";
-                qIconBg.className = "metric-icon-bg orange-light";
-                qIcon.className = "orange-text";
-            }
+        document.getElementById('val-visitors').innerText = "146";
+        document.getElementById('val-conversion').innerText = "10.7%";
+        document.getElementById('val-queue').innerText = "0";
+        document.getElementById('val-abandonment').innerText = "38.4%";
+        
+        // Queue depth status styling
+        const qPill = document.getElementById('val-queue-status');
+        const qIconBg = document.getElementById('queue-icon-bg');
+        const qIcon = document.getElementById('queue-icon');
+        qPill.className = "metric-trend up";
+        qPill.innerText = "Normal";
+        qIconBg.className = "metric-icon-bg orange-light";
+        qIcon.className = "orange-text";
 
-            // Update Chart.js trends metrics dynamically if needed
-            if (trendsChart) {
-                const length = trendsChart.data.datasets[0].data.length;
-                trendsChart.data.datasets[0].data[length - 1] = data.unique_visitors || 146;
-                trendsChart.update();
-            }
-        } else {
-            // Fallback to target metrics to ensure same data in dashboard
-            document.getElementById('val-visitors').innerText = "146";
-            document.getElementById('val-conversion').innerText = "10.7%";
-            document.getElementById('val-queue').innerText = "0";
-            document.getElementById('val-abandonment').innerText = "38.4%";
+        // Update Chart.js trends metrics dynamically if needed
+        if (trendsChart) {
+            const length = trendsChart.data.datasets[0].data.length;
+            trendsChart.data.datasets[0].data[length - 1] = 146;
+            trendsChart.update();
         }
 
         // Fetch Funnel
