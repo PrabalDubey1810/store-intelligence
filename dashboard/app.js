@@ -186,10 +186,10 @@ function drawCCTVFrame() {
 async function updateMetrics() {
     try {
         // Fetch Metrics
-        document.getElementById('val-visitors').innerText = "146";
-        document.getElementById('val-conversion').innerText = "10.7%";
+        document.getElementById('val-visitors').innerText = "170";
+        document.getElementById('val-conversion').innerText = "60.0%";
         document.getElementById('val-queue').innerText = "0";
-        document.getElementById('val-abandonment').innerText = "38.4%";
+        document.getElementById('val-abandonment').innerText = "0.0%";
         
         // Queue depth status styling
         const qPill = document.getElementById('val-queue-status');
@@ -203,7 +203,7 @@ async function updateMetrics() {
         // Update Chart.js trends metrics dynamically if needed
         if (trendsChart) {
             const length = trendsChart.data.datasets[0].data.length;
-            trendsChart.data.datasets[0].data[length - 1] = 146;
+            trendsChart.data.datasets[0].data[length - 1] = 170;
             trendsChart.update();
         }
 
@@ -768,13 +768,13 @@ document.getElementById('cam-export-btn')?.addEventListener('click', ()=>{
 let chartZoneDwell=null, chartHourlyFootfall=null, chartConvDonut=null;
 
 function initAnalyticsCharts() {
-    const visitors = parseInt(document.getElementById('val-visitors')?.textContent)||146;
-    const convPct  = parseFloat(document.getElementById('val-conversion')?.textContent)||10.7;
+    const visitors = parseInt(document.getElementById('val-visitors')?.textContent)||170;
+    const convPct  = parseFloat(document.getElementById('val-conversion')?.textContent)||60.0;
     document.getElementById('akpi-footfall').textContent  = visitors;
     document.getElementById('akpi-conv').textContent      = convPct.toFixed(1)+'%';
-    document.getElementById('akpi-dwell').textContent     = '3.2s';
-    document.getElementById('akpi-peak').textContent      = 'F.O.H';
-    document.getElementById('akpi-abandon').textContent   = '38.4%';
+    document.getElementById('akpi-dwell').textContent     = '40.2s';
+    document.getElementById('akpi-peak').textContent      = 'Bottom Aisle';
+    document.getElementById('akpi-abandon').textContent   = '0.0%';
 
     // Zone dwell bar
     if (chartZoneDwell) chartZoneDwell.destroy();
