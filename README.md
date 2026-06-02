@@ -10,7 +10,7 @@ Built for Purplle Tech Challenge 2026 — Brigade Road, Bangalore (Store: ST1008
 
 ```bash
 # 1. Clone and enter
-git clone <your-repo-url>
+git clone https://github.com/PrabalDubey1810/store-intelligence.git
 cd store-intelligence
 
 # 2. Copy POS data
