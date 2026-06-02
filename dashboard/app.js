@@ -819,17 +819,20 @@ function initAnalyticsCharts() {
             plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed} visitors`}}} }
     });
 
-    // Brand ranking
-    const brands=[{name:'F.O.H Makeup Unit',visits:42,pct:100,color:'#8b5cf6'},{name:'Lakmé',visits:31,pct:74,color:'#ff6b35'},
-        {name:'Maybelline',visits:28,pct:67,color:'#f59e0b'},{name:'The Minimalist',visits:25,pct:60,color:'#10b981'},
-        {name:"L'Oréal",visits:22,pct:52,color:'#3b82f6'},{name:'Foxtale',visits:19,pct:45,color:'#ec4899'},
-        {name:'Aqualogica',visits:17,pct:40,color:'#14b8a6'},{name:'Good Vibes',visits:14,pct:33,color:'#a78bfa'}];
+    // Brand ranking (Driven by real pos_transactions.csv)
+    const brands=[
+        {name:'Faces Canada',visits:32,pct:100,color:'#8b5cf6'},
+        {name:'Good Vibes',visits:14,pct:44,color:'#ff6b35'},
+        {name:'Purplle',visits:10,pct:31,color:'#f59e0b'},
+        {name:'NY Bae',visits:10,pct:31,color:'#10b981'},
+        {name:'DERMDOC',visits:6,pct:19,color:'#3b82f6'}
+    ];
     const rankEl=document.getElementById('brand-rank-list');
     if(rankEl){ rankEl.innerHTML=brands.map((b,i)=>`
         <div class="brand-rank-item">
             <span class="brand-rank-pos">${i+1}</span>
             <div class="brand-rank-body">
-                <div class="brand-rank-top"><span class="brand-rank-name">${b.name}</span><span class="brand-rank-val">${b.visits} visits</span></div>
+                <div class="brand-rank-top"><span class="brand-rank-name">${b.name}</span><span class="brand-rank-val">${b.visits} items sold</span></div>
                 <div class="brand-rank-track"><div class="brand-rank-fill" style="width:0%;background:${b.color};transition:width 0.7s ease" data-pct="${b.pct}"></div></div>
             </div>
         </div>`).join('');

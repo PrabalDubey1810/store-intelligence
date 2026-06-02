@@ -940,6 +940,70 @@
 
                 </div>
 
+                <!-- ── NEW: POS Sales Intelligence Analytics Panel ── -->
+                <div class="card" style="margin-top:28px">
+                    <div class="card-header">
+                        <div>
+                            <h3><i data-lucide="banknote" class="orange-text" style="vertical-align:middle;margin-right:6px"></i> POS Transaction Intelligence</h3>
+                            <p style="font-size:12px;color:var(--text-muted);margin-top:2px">Comprehensive sales performance, basket analytics, and coupon attachment statistics (ST1008)</p>
+                        </div>
+                        <span class="badge warning-badge">pos_transactions.csv Verified</span>
+                    </div>
+
+                    <!-- POS Grid -->
+                    <div class="pos-intel-grid" style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:20px;padding:20px">
+                        
+                        <!-- Col 1: Financial Overview -->
+                        <div class="pos-section" style="background:rgba(255,255,255,0.02);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.05)">
+                            <h4 style="margin-bottom:12px;border-bottom:1px solid rgba(255,107,53,0.2);padding-bottom:6px;color:#ff6b35">💰 Financial Performance</h4>
+                            <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:10px;font-size:13px">
+                                <li style="display:flex;justify-content:between"><span>Gross Value (GMV):</span><strong style="color:white">₹44,920.00</strong></li>
+                                <li style="display:flex;justify-content:between"><span>Net Revenue (NMV):</span><strong style="color:#10b981">₹34,831.74</strong></li>
+                                <li style="display:flex;justify-content:between"><span>Total Discounts:</span><strong style="color:#ef4444">₹10,088.26 (22.5%)</strong></li>
+                                <li style="display:flex;justify-content:between"><span>Items Sold:</span><strong style="color:white">117 units</strong></li>
+                                <li style="display:flex;justify-content:between"><span>Basket Attachment Rate:</span><strong style="color:#ff6b35">74.2% (Coupons)</strong></li>
+                            </ul>
+                        </div>
+
+                        <!-- Col 2: Basket & Order Analytics -->
+                        <div class="pos-section" style="background:rgba(255,255,255,0.02);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.05)">
+                            <h4 style="margin-bottom:12px;border-bottom:1px solid rgba(139,92,246,0.2);padding-bottom:6px;color:#8b5cf6">🛒 Basket &amp; Customer Analytics</h4>
+                            <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:10px;font-size:13px">
+                                <li style="display:flex;justify-content:between"><span>Total Invoices/Orders:</span><strong style="color:white">24</strong></li>
+                                <li style="display:flex;justify-content:between"><span>Unique Customers:</span><strong style="color:white">21 (3 Repeat)</strong></li>
+                                <li style="display:flex;justify-content:between"><span>Average Order Value:</span><strong style="color:#10b981">₹1,451.32</strong></li>
+                                <li style="display:flex;justify-content:between"><span>Basket Size (Unique SKUs):</span><strong style="color:white">4.21 items</strong></li>
+                                <li style="display:flex;justify-content:between"><span>Basket Units (Total Qty):</span><strong style="color:white">4.88 units</strong></li>
+                            </ul>
+                        </div>
+
+                        <!-- Col 3: Product Category Performance -->
+                        <div class="pos-section" style="background:rgba(255,255,255,0.02);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.05)">
+                            <h4 style="margin-bottom:12px;border-bottom:1px solid rgba(16,185,129,0.2);padding-bottom:6px;color:#10b981">💄 Department Performance</h4>
+                            <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:10px;font-size:13px">
+                                <li style="display:flex;justify-content:between"><span>Makeup:</span><strong style="color:white">54 units (53.4%)</strong></li>
+                                <li style="display:flex;justify-content:between"><span>Skin Care:</span><strong style="color:white">27 units (26.7%)</strong></li>
+                                <li style="display:flex;justify-content:between"><span>Bath &amp; Body:</span><strong style="color:white">9 units (8.9%)</strong></li>
+                                <li style="display:flex;justify-content:between"><span>Hair Care:</span><strong style="color:white">6 units (5.9%)</strong></li>
+                                <li style="display:flex;justify-content:between"><span>Personal Care:</span><strong style="color:white">4 units (3.9%)</strong></li>
+                            </ul>
+                        </div>
+
+                        <!-- Col 4: Sales Representative Assists -->
+                        <div class="pos-section" style="background:rgba(255,255,255,0.02);padding:16px;border-radius:12px;border:1px solid rgba(255,255,255,0.05)">
+                            <h4 style="margin-bottom:12px;border-bottom:1px solid rgba(245,158,11,0.2);padding-bottom:6px;color:#f59e0b">👥 Top Staff Assisted Sales</h4>
+                            <ul style="list-style:none;padding:0;display:flex;flex-direction:column;gap:10px;font-size:13px">
+                                <li style="display:flex;justify-content:between"><span>Zufishan Khazra:</span><strong style="color:#10b981">42 items (41.5%)</strong></li>
+                                <li style="display:flex;justify-content:between"><span>Kasthuri V:</span><strong style="color:white">19 items</strong></li>
+                                <li style="display:flex;justify-content:between"><span>Priya V:</span><strong style="color:white">13 items</strong></li>
+                                <li style="display:flex;justify-content:between"><span>Shashikala .:</span><strong style="color:white">12 items</strong></li>
+                                <li style="display:flex;justify-content:between"><span>Naziya Begum:</span><strong style="color:white">8 items</strong></li>
+                            </ul>
+                        </div>
+
+                    </div>
+                </div>
+
             </div><!-- end page-analytics -->
 
         </main>
