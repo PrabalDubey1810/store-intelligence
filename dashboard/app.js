@@ -340,6 +340,9 @@ window.addEventListener('load', () => {
     drawCCTVFrame();
     updateMetrics();
     renderMinimap();
+    
+    // Set Store Analytics as the default first page
+    showPage('analytics');
 
     // Poll data every 5 seconds
     setInterval(updateMetrics, 5000);
@@ -595,7 +598,7 @@ function _updateMinimapBlips() {
 let analyticsChartsInitialized = false;
 
 function showPage(pageId) {
-    ['dashboard','cameras','analytics'].forEach(p => {
+    ['live-feed','cameras','analytics'].forEach(p => {
         const el = document.getElementById(`page-${p}`);
         if (el) el.style.display = 'none';
     });
@@ -613,11 +616,11 @@ function showPage(pageId) {
     document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
     document.querySelector(`.nav-item[data-page="${pageId}"]`)?.classList.add('active');
     const titleMap = {
-        dashboard: ['Real-Time Store Intelligence','Live retail metrics powered by YOLOv8n & ByteTrack'],
-        cameras:   ['Camera Analytics','Per-camera detection rates, confidence & event logs'],
-        analytics: ['Store Analytics','Zone performance, brand rankings & conversion intelligence'],
+        'live-feed': ['Real-Time Live Feed','Live retail metrics powered by YOLOv8n & ByteTrack'],
+        cameras:     ['Camera Analytics','Per-camera detection rates, confidence & event logs'],
+        analytics:   ['Store Analytics','Zone performance, brand rankings & conversion intelligence'],
     };
-    const info = titleMap[pageId] || titleMap.dashboard;
+    const info = titleMap[pageId] || titleMap.analytics;
     const h1 = document.querySelector('.header h1');
     const sub = document.querySelector('.header .subtitle');
     if (h1) h1.textContent = info[0];
