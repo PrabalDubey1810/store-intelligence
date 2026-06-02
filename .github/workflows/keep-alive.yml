@@ -1,0 +1,16 @@
+name: Keep Render Service Active
+
+on:
+  schedule:
+    # Runs every 10 minutes (free tier spins down after 15 mins)
+    - cron: '*/10 * * * *'
+  workflow_dispatch: # Allows manually triggering the ping from GitHub actions UI
+
+jobs:
+  ping:
+    name: Ping backend health endpoint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping Render Backend
+        run: |
+          curl -s -f -I "https://store-intelligence-api-6kve.onrender.com/health" || echo "Ping failed"
