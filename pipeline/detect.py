@@ -111,6 +111,7 @@ def process_clip(
     # Billing queue: track current depth
     billing_zone_visitors: set[str] = set()
 
+    emitted_entries = set()
     events_emitted = 0
     frame_idx = 0
 
@@ -164,8 +165,9 @@ def process_clip(
 
             # ── Entry/Exit events ────────────────────────────────────────────
             crossing = direction.update(track_id, bbox)
-            if crossing == "ENTRY" or event_hint == "new":
+            if crossing == "ENTRY" or visitor_id not in emitted_entries:
                 event_type = "REENTRY" if event_hint == "reentry" else "ENTRY"
+                emitted_entries.add(visitor_id)
                 seq = emitter.next_seq(visitor_id)
                 emitter.emit(build_event(
                     store_id=store_id, camera_id=camera_id,

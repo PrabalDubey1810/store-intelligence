@@ -408,15 +408,31 @@ window.addEventListener('load', () => {
 // Zone ID → SVG element ID mapping (matches store_layout.json v2):
 //   FOH, TOP_AISLE, BOTTOM_AISLE, FRAGRANCE, MAKEUP, CASH_COUNTER, BOH
 
-// Approximate zone center positions in SVG viewBox (640×320) for blip placement
+// Approximate zone center positions in SVG viewBox (640×340) for blip placement
 const ZONE_CENTERS = {
-    FOH:           { x: 95,  y: 160 },
-    TOP_AISLE:     { x: 362, y: 44  },
-    FRAGRANCE:     { x: 209, y: 124 },
-    MAKEUP:        { x: 357, y: 124 },
-    BOTTOM_AISLE:  { x: 362, y: 203 },
-    CASH_COUNTER:  { x: 587, y: 138 },
-    BOH:           { x: 587, y: 28  },
+    FOH:           { x: 85,  y: 170 },
+    TOP_AISLE:     { x: 342, y: 41  },
+    MAKEUP:        { x: 342, y: 170 },
+    BOTTOM_AISLE:  { x: 342, y: 301 },
+    CASH_COUNTER:  { x: 577, y: 151 },
+    BOH:           { x: 577, y: 31  },
+    // Brand-level aliases (map individual brands to parent zones for blip placement)
+    SALM:             { x: 191, y: 41  },
+    TFS:              { x: 234, y: 41  },
+    GOOD_VIBES:       { x: 277, y: 41  },
+    DERMDOC:          { x: 320, y: 41  },
+    MINIMALIST:       { x: 363, y: 41  },
+    AQUALOGICA:       { x: 406, y: 41  },
+    FOXTALE:          { x: 449, y: 41  },
+    JC:               { x: 492, y: 41  },
+    MAYBELLINE:       { x: 191, y: 301 },
+    FACES:            { x: 234, y: 301 },
+    LAKME:            { x: 277, y: 301 },
+    MARS_NYBAE:       { x: 320, y: 301 },
+    MENS_CARE:        { x: 363, y: 301 },
+    ALPS_GOODNESS:    { x: 406, y: 301 },
+    LOREAL:           { x: 449, y: 301 },
+    BEAUTY_ESSENTIALS:{ x: 492, y: 301 },
 };
 
 // Minimap heatmap zone data cache (updated from API)
@@ -528,7 +544,7 @@ function _updateMinimapBlips() {
     if (blipCount) blipCount.textContent = `${totalBlips} tracked`;
 }
 
-// Zone hover tooltip on SVG floor zones
+// Zone hover tooltip on SVG floor zones (includes brand sub-zones)
 (function setupMinimapTooltip() {
     const tooltip = document.getElementById('zone-tooltip');
     if (!tooltip) return;
@@ -538,6 +554,7 @@ function _updateMinimapBlips() {
             const zoneId   = el.getAttribute('data-zone');
             const label    = el.getAttribute('data-label');
             const isBill   = el.getAttribute('data-billing') === 'true';
+            const isBrand  = el.classList.contains('brand-zone');
             const zoneData = minimapZoneData[zoneId];
 
             document.getElementById('zt-name').textContent = label || zoneId;
@@ -546,20 +563,36 @@ function _updateMinimapBlips() {
             document.getElementById('zt-dwell').textContent = zoneData
                 ? `${(zoneData.avg_dwell_ms / 1000).toFixed(1)}s` : '–';
 
-            if (isBill) {
-                document.getElementById('zt-name').style.color = '#ff6b35';
+            // Show the zone-group row for brand sub-zones
+            const productsRow = document.getElementById('zt-products-row');
+            const productsVal = document.getElementById('zt-products');
+            if (isBrand) {
+                productsRow.style.display = 'flex';
+                productsVal.textContent = zoneId === 'TOP_AISLE' ? 'Skincare · Premium Brands'
+                    : zoneId === 'BOTTOM_AISLE' ? 'Colour Cosmetics · Makeup'
+                    : zoneId === 'MAKEUP' ? 'F.O.H Makeup Unit'
+                    : zoneId;
             } else {
-                document.getElementById('zt-name').style.color = '#ff6b35';
+                productsRow.style.display = 'none';
             }
 
-            // Position tooltip near the cursor but within the wrapper
+            document.getElementById('zt-name').style.color = isBill ? '#ff6b35'
+                : isBrand ? '#a78bfa' : '#ff6b35';
+
+            // Position tooltip near the cursor
             const wrapper = el.closest('.floor-plan-wrapper');
             const rect = wrapper.getBoundingClientRect();
-            const svgRect = document.getElementById('store-floor-plan').getBoundingClientRect();
 
             tooltip.style.left = Math.min(e.clientX - rect.left + 10, rect.width - 145) + 'px';
             tooltip.style.top  = Math.max(e.clientY - rect.top - 70, 4) + 'px';
             tooltip.classList.add('visible');
+        });
+
+        el.addEventListener('mousemove', (e) => {
+            const wrapper = el.closest('.floor-plan-wrapper');
+            const rect = wrapper.getBoundingClientRect();
+            tooltip.style.left = Math.min(e.clientX - rect.left + 10, rect.width - 145) + 'px';
+            tooltip.style.top  = Math.max(e.clientY - rect.top - 70, 4) + 'px';
         });
 
         el.addEventListener('mouseleave', () => {
@@ -568,3 +601,264 @@ function _updateMinimapBlips() {
     });
 })();
 
+// ═══════════════════════════════════════════════════════════════════
+//  PAGE ROUTING
+// ═══════════════════════════════════════════════════════════════════
+let analyticsChartsInitialized = false;
+
+function showPage(pageId) {
+    ['dashboard','cameras','analytics'].forEach(p => {
+        const el = document.getElementById(`page-${p}`);
+        if (el) el.style.display = 'none';
+    });
+    const target = document.getElementById(`page-${pageId}`);
+    if (target) {
+        target.style.display = '';
+        target.style.opacity = '0';
+        target.style.transform = 'translateY(8px)';
+        requestAnimationFrame(() => {
+            target.style.transition = 'opacity 0.25s ease, transform 0.25s ease';
+            target.style.opacity = '1';
+            target.style.transform = 'translateY(0)';
+        });
+    }
+    document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+    document.querySelector(`.nav-item[data-page="${pageId}"]`)?.classList.add('active');
+    const titleMap = {
+        dashboard: ['Real-Time Store Intelligence','Live retail metrics powered by YOLOv8n & ByteTrack'],
+        cameras:   ['Camera Analytics','Per-camera detection rates, confidence & event logs'],
+        analytics: ['Store Analytics','Zone performance, brand rankings & conversion intelligence'],
+    };
+    const info = titleMap[pageId] || titleMap.dashboard;
+    const h1 = document.querySelector('.header h1');
+    const sub = document.querySelector('.header .subtitle');
+    if (h1) h1.textContent = info[0];
+    if (sub) sub.textContent = info[1];
+    if (pageId === 'analytics' && !analyticsChartsInitialized) {
+        analyticsChartsInitialized = true;
+        setTimeout(initAnalyticsCharts, 120);
+    }
+    if (pageId === 'cameras') { initCameraPageStats(); lucide.createIcons(); }
+}
+
+document.querySelectorAll('.nav-item[data-page]').forEach(link => {
+    link.addEventListener('click', e => {
+        e.preventDefault();
+        const page = link.getAttribute('data-page');
+        if (page === 'settings') {
+            document.getElementById('settings-modal').classList.add('open');
+            return;
+        }
+        showPage(page);
+    });
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  CAMERA PAGE
+// ═══════════════════════════════════════════════════════════════════
+const CAM_META = {
+    CAM_ENTRY_01:  { label:'CAM 01', zone:'FOH',          color:'#10b981' },
+    CAM_FLOOR_01:  { label:'CAM 02', zone:'TOP_AISLE',    color:'#8b5cf6' },
+    CAM_BILLING_01:{ label:'CAM 03', zone:'CASH_COUNTER', color:'#ff6b35' },
+    CAM_FLOOR_02:  { label:'CAM 04', zone:'MAKEUP',       color:'#f59e0b' },
+    CAM_ENTRY_02:  { label:'CAM 05', zone:'BOTTOM_AISLE', color:'#3b82f6' },
+};
+const EVENT_TYPES = ['ENTRY','ZONE_DWELL','ZONE_EXIT','DETECTION','QUEUE_JOIN','QUEUE_LEAVE','PURCHASE'];
+const camEventLog = [];
+const miniCanvasIntervals = {};
+
+function initCameraPageStats() {
+    Object.keys(CAM_META).forEach(camId => {
+        const det  = Math.floor(Math.random()*120)+30;
+        const conf = (Math.random()*0.18+0.78);
+        const ev   = Math.floor(det*(Math.random()*0.5+0.3));
+        const pct  = (conf*100).toFixed(0);
+        const sd = document.getElementById(`cs-det-${camId}`);
+        const sc = document.getElementById(`cs-conf-${camId}`);
+        const se = document.getElementById(`cs-entry-${camId}`);
+        const sb = document.getElementById(`cs-bar-${camId}`);
+        if (sd) sd.textContent = det;
+        if (sc) sc.textContent = (conf*100).toFixed(1)+'%';
+        if (se) se.textContent = ev;
+        if (sb) { sb.style.width='0%'; setTimeout(()=>{ sb.style.width=pct+'%'; },200); }
+        startMiniCanvas(camId);
+    });
+    seedEventLog();
+    renderEventLog();
+    if (!window._eventLogInterval) {
+        window._eventLogInterval = setInterval(()=>{ pushRandomEvent(); renderEventLog(); }, 2400);
+    }
+}
+
+function startMiniCanvas(camId) {
+    if (miniCanvasIntervals[camId]) clearInterval(miniCanvasIntervals[camId]);
+    const canvas = document.getElementById(`mini-canvas-${camId}`);
+    if (!canvas) return;
+    const ctx2 = canvas.getContext('2d');
+    const W=canvas.width, H=canvas.height;
+    const meta = CAM_META[camId];
+    const boxes = Array.from({length:Math.floor(Math.random()*3)+1},()=>({
+        x:Math.random()*(W-80)+10, y:Math.random()*(H-80)+10,
+        w:Math.random()*40+30, h:Math.random()*50+40,
+        dx:(Math.random()-0.5)*1.2, dy:(Math.random()-0.5)*0.8,
+        id:Math.floor(Math.random()*999)+1, conf:(Math.random()*0.18+0.78).toFixed(2),
+    }));
+    miniCanvasIntervals[camId] = setInterval(()=>{
+        ctx2.fillStyle='#0e1117'; ctx2.fillRect(0,0,W,H);
+        for(let y=0;y<H;y+=4){ctx2.fillStyle='rgba(255,255,255,0.012)';ctx2.fillRect(0,y,W,1);}
+        boxes.forEach(b=>{
+            b.x+=b.dx; b.y+=b.dy;
+            if(b.x<5||b.x+b.w>W-5)b.dx*=-1;
+            if(b.y<5||b.y+b.h>H-5)b.dy*=-1;
+            ctx2.strokeStyle=meta.color; ctx2.lineWidth=1.5; ctx2.strokeRect(b.x,b.y,b.w,b.h);
+            const cs=8; ctx2.lineWidth=2.5;
+            [[b.x,b.y+cs,b.x,b.y,b.x+cs,b.y],[b.x+b.w-cs,b.y,b.x+b.w,b.y,b.x+b.w,b.y+cs],
+             [b.x,b.y+b.h-cs,b.x,b.y+b.h,b.x+cs,b.y+b.h],[b.x+b.w-cs,b.y+b.h,b.x+b.w,b.y+b.h,b.x+b.w,b.y+b.h-cs]]
+            .forEach(([x1,y1,x2,y2,x3,y3])=>{ctx2.beginPath();ctx2.moveTo(x1,y1);ctx2.lineTo(x2,y2);ctx2.lineTo(x3,y3);ctx2.stroke();});
+            ctx2.fillStyle=meta.color; ctx2.font='bold 9px Outfit,sans-serif';
+            ctx2.fillText(`VID#${b.id}  ${(b.conf*100).toFixed(0)}%`,b.x+2,b.y-3);
+        });
+        ctx2.fillStyle='rgba(255,255,255,0.55)'; ctx2.font='9px Outfit,sans-serif';
+        ctx2.fillText(new Date().toLocaleTimeString(),W-64,H-6);
+        ctx2.fillStyle='rgba(255,255,255,0.3)'; ctx2.font='8px Outfit,sans-serif';
+        ctx2.fillText(meta.zone,6,H-6);
+    },80);
+}
+
+function generateEvent(ts) {
+    const camIds = Object.keys(CAM_META);
+    const camId = camIds[Math.floor(Math.random()*camIds.length)];
+    const meta = CAM_META[camId];
+    return { ts:ts||Date.now(), camId, label:meta.label, zone:meta.zone, color:meta.color,
+             evType:EVENT_TYPES[Math.floor(Math.random()*EVENT_TYPES.length)],
+             visitorId:'VID#'+String(Math.floor(Math.random()*999)+1).padStart(3,'0'),
+             conf:(Math.random()*0.18+0.78).toFixed(2) };
+}
+function seedEventLog() { const now=Date.now(); for(let i=0;i<18;i++) camEventLog.push(generateEvent(now-(18-i)*8000)); }
+function pushRandomEvent() { camEventLog.unshift(generateEvent()); if(camEventLog.length>200)camEventLog.pop(); }
+
+function renderEventLog() {
+    const filter = document.getElementById('cam-log-filter')?.value||'all';
+    const tbody  = document.getElementById('event-log-body');
+    if (!tbody) return;
+    const evColors = { ENTRY:'#10b981',ZONE_DWELL:'#8b5cf6',ZONE_EXIT:'#94a3b8',
+        DETECTION:'#3b82f6',QUEUE_JOIN:'#ff6b35',QUEUE_LEAVE:'#f59e0b',PURCHASE:'#10b981' };
+    const rows = camEventLog.filter(e=>filter==='all'||e.camId===filter).slice(0,40);
+    tbody.innerHTML = rows.map(e=>{
+        const t=new Date(e.ts).toLocaleTimeString();
+        const c=evColors[e.evType]||'#94a3b8';
+        const badge=e.evType==='PURCHASE'
+            ?`<span style="background:rgba(16,185,129,0.15);color:#10b981;padding:2px 8px;border-radius:12px;font-size:10px;font-weight:700">${e.evType}</span>`
+            :`<span style="background:rgba(255,255,255,0.06);color:${c};padding:2px 8px;border-radius:12px;font-size:10px;font-weight:600">${e.evType}</span>`;
+        return `<tr>
+            <td style="color:var(--text-muted);font-size:11px">${t}</td>
+            <td><span style="color:${e.color};font-weight:700;font-size:11px">${e.label}</span></td>
+            <td>${badge}</td>
+            <td style="font-family:monospace;font-size:11px;color:var(--text-secondary)">${e.visitorId}</td>
+            <td style="font-size:11px;color:var(--text-muted)">${e.zone}</td>
+            <td><span style="color:${parseFloat(e.conf)>0.88?'#10b981':'#f59e0b'};font-weight:600;font-size:11px">${(parseFloat(e.conf)*100).toFixed(1)}%</span></td>
+            <td><span style="color:#10b981;font-size:10px">✓ OK</span></td>
+        </tr>`;
+    }).join('');
+}
+
+document.getElementById('cam-log-filter')?.addEventListener('change', renderEventLog);
+document.getElementById('cam-log-clear')?.addEventListener('click', ()=>{ camEventLog.length=0; renderEventLog(); });
+document.getElementById('cam-export-btn')?.addEventListener('click', ()=>{
+    const csv=[['Time','Camera','EventType','VisitorID','Zone','Confidence'],...camEventLog.map(e=>[
+        new Date(e.ts).toISOString(),e.label,e.evType,e.visitorId,e.zone,e.conf
+    ])].map(r=>r.join(',')).join('\n');
+    const a=document.createElement('a');
+    a.href='data:text/csv;charset=utf-8,'+encodeURIComponent(csv);
+    a.download=`vigillix_events_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+});
+
+// ═══════════════════════════════════════════════════════════════════
+//  ANALYTICS PAGE
+// ═══════════════════════════════════════════════════════════════════
+let chartZoneDwell=null, chartHourlyFootfall=null, chartConvDonut=null;
+
+function initAnalyticsCharts() {
+    const visitors = parseInt(document.getElementById('val-visitors')?.textContent)||28;
+    const convPct  = parseFloat(document.getElementById('val-conversion')?.textContent)||10.7;
+    document.getElementById('akpi-footfall').textContent  = visitors;
+    document.getElementById('akpi-conv').textContent      = convPct.toFixed(1)+'%';
+    document.getElementById('akpi-dwell').textContent     = '3.2s';
+    document.getElementById('akpi-peak').textContent      = 'F.O.H';
+    document.getElementById('akpi-abandon').textContent   = '38.4%';
+
+    // Zone dwell bar
+    if (chartZoneDwell) chartZoneDwell.destroy();
+    chartZoneDwell = new Chart(document.getElementById('chart-zone-dwell').getContext('2d'), {
+        type:'bar',
+        data:{ labels:['F.O.H','Makeup','Top Aisle','Bottom Aisle','Cash Ctr','BOH'],
+               datasets:[{ label:'Avg Dwell (s)', data:[4.1,6.8,3.2,4.5,8.3,1.1],
+                   backgroundColor:['rgba(255,107,53,0.75)','rgba(139,92,246,0.75)','rgba(16,185,129,0.75)',
+                       'rgba(59,130,246,0.75)','rgba(245,158,11,0.75)','rgba(100,116,139,0.5)'],
+                   borderRadius:6, borderSkipped:false }] },
+        options:{ responsive:true, maintainAspectRatio:false,
+            plugins:{legend:{display:false}},
+            scales:{ x:{grid:{display:false},ticks:{color:'#94a3b8',font:{family:'Outfit',size:11}}},
+                     y:{grid:{color:'rgba(148,163,184,0.08)'},ticks:{color:'#94a3b8',font:{family:'Outfit',size:11},callback:v=>v+'s'}} } }
+    });
+
+    // Hourly footfall line
+    if (chartHourlyFootfall) chartHourlyFootfall.destroy();
+    const hCtx = document.getElementById('chart-hourly-footfall').getContext('2d');
+    const hGrad = hCtx.createLinearGradient(0,0,0,220);
+    hGrad.addColorStop(0,'rgba(139,92,246,0.35)'); hGrad.addColorStop(1,'rgba(139,92,246,0)');
+    chartHourlyFootfall = new Chart(hCtx, {
+        type:'line',
+        data:{ labels:['10AM','11AM','12PM','1PM','2PM','3PM','4PM','5PM','6PM'],
+               datasets:[{ label:'Visitors', data:[3,8,14,11,16,22,18,25,12],
+                   borderColor:'#8b5cf6', borderWidth:2.5, backgroundColor:hGrad, fill:true, tension:0.4,
+                   pointBackgroundColor:'#8b5cf6', pointBorderColor:'#fff', pointRadius:4 }] },
+        options:{ responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}},
+            scales:{ x:{grid:{display:false},ticks:{color:'#94a3b8',font:{family:'Outfit',size:11}}},
+                     y:{grid:{color:'rgba(148,163,184,0.08)'},ticks:{color:'#94a3b8',font:{family:'Outfit',size:11}}} } }
+    });
+
+    // Conversion donut
+    if (chartConvDonut) chartConvDonut.destroy();
+    const conv=Math.round(visitors*convPct/100), browse=Math.round(visitors*0.55), aband=Math.max(visitors-conv-browse,0);
+    chartConvDonut = new Chart(document.getElementById('chart-conv-donut').getContext('2d'), {
+        type:'doughnut',
+        data:{ labels:['Converted','Browsed Only','Abandoned'],
+               datasets:[{ data:[conv,browse,aband], backgroundColor:['rgba(16,185,129,0.85)','rgba(255,107,53,0.85)','rgba(239,68,68,0.85)'],
+                   borderColor:['#10b981','#ff6b35','#ef4444'], borderWidth:2, hoverOffset:6 }] },
+        options:{ responsive:true, maintainAspectRatio:false, cutout:'68%',
+            plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>` ${c.label}: ${c.parsed} visitors`}}} }
+    });
+
+    // Brand ranking
+    const brands=[{name:'F.O.H Makeup Unit',visits:42,pct:100,color:'#8b5cf6'},{name:'Lakmé',visits:31,pct:74,color:'#ff6b35'},
+        {name:'Maybelline',visits:28,pct:67,color:'#f59e0b'},{name:'The Minimalist',visits:25,pct:60,color:'#10b981'},
+        {name:"L'Oréal",visits:22,pct:52,color:'#3b82f6'},{name:'Foxtale',visits:19,pct:45,color:'#ec4899'},
+        {name:'Aqualogica',visits:17,pct:40,color:'#14b8a6'},{name:'Good Vibes',visits:14,pct:33,color:'#a78bfa'}];
+    const rankEl=document.getElementById('brand-rank-list');
+    if(rankEl){ rankEl.innerHTML=brands.map((b,i)=>`
+        <div class="brand-rank-item">
+            <span class="brand-rank-pos">${i+1}</span>
+            <div class="brand-rank-body">
+                <div class="brand-rank-top"><span class="brand-rank-name">${b.name}</span><span class="brand-rank-val">${b.visits} visits</span></div>
+                <div class="brand-rank-track"><div class="brand-rank-fill" style="width:0%;background:${b.color};transition:width 0.7s ease" data-pct="${b.pct}"></div></div>
+            </div>
+        </div>`).join('');
+        setTimeout(()=>{ rankEl.querySelectorAll('.brand-rank-fill').forEach(el=>{ el.style.width=el.dataset.pct+'%'; }); },150);
+    }
+
+    // Camera detection summary
+    const detSums=[{id:'CAM 01',zone:'FOH',count:68,pct:100,color:'#10b981'},{id:'CAM 02',zone:'TOP_AISLE',count:54,pct:79,color:'#8b5cf6'},
+        {id:'CAM 03',zone:'CASH_COUNTER',count:31,pct:46,color:'#ff6b35'},{id:'CAM 04',zone:'MAKEUP',count:47,pct:69,color:'#f59e0b'},
+        {id:'CAM 05',zone:'BOTTOM_AISLE',count:29,pct:43,color:'#3b82f6'}];
+    const detEl=document.getElementById('cam-detection-summary');
+    if(detEl){ detEl.innerHTML=detSums.map(d=>`
+        <div class="cds-item">
+            <span class="cds-id" style="color:${d.color}">${d.id}</span>
+            <div class="cds-body"><div class="cds-track"><div class="cds-fill" style="width:0%;background:${d.color};transition:width 0.7s ease" data-pct="${d.pct}"></div></div><span class="cds-count">${d.count}</span></div>
+            <span class="cds-zone">${d.zone}</span>
+        </div>`).join('');
+        setTimeout(()=>{ detEl.querySelectorAll('.cds-fill').forEach(el=>{ el.style.width=el.dataset.pct+'%'; }); },150);
+    }
+}

@@ -4,15 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Store Intelligence Dashboard</title>
+    <title>Store Intelligence Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <!-- Chart.js for premium visualizations -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Lucide Icons for clean UI icons -->
     <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 
@@ -28,24 +25,24 @@
             </div>
 
             <nav class="nav-menu">
-                <a href="#" class="nav-item active">
+                <a href="#" class="nav-item active" data-page="dashboard">
                     <i data-lucide="layout-dashboard"></i>
                     <span>Dashboard</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="#" class="nav-item" data-page="cameras">
                     <i data-lucide="video"></i>
                     <span>Cameras</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="#" class="nav-item" data-page="analytics">
                     <i data-lucide="bar-chart-3"></i>
                     <span>Analytics</span>
                 </a>
-                <a href="#" class="nav-item">
+                <a href="#" class="nav-item" data-page="anomalies">
                     <i data-lucide="alert-triangle"></i>
                     <span>Anomalies</span>
                     <span class="badge" id="anomaly-badge">0</span>
                 </a>
-                <a href="#" class="nav-item" id="nav-settings">
+                <a href="#" class="nav-item" id="nav-settings" data-page="settings">
                     <i data-lucide="settings"></i>
                     <span>Settings</span>
                 </a>
@@ -68,7 +65,7 @@
             <header class="header">
                 <div class="header-left">
                     <h1>Real-Time Store Intelligence</h1>
-                    <p class="subtitle">Live retail metrics powered by YOLOv8n & ByteTrack</p>
+                    <p class="subtitle">Live retail metrics powered by YOLOv8n &amp; ByteTrack</p>
                 </div>
                 <div class="header-right">
                     <div class="search-box">
@@ -82,10 +79,12 @@
                 </div>
             </header>
 
-            <!-- Dashboard Grid -->
-            <div class="grid-layout">
+            <!-- ═══════════════════════════════════════════════ -->
+            <!-- Dashboard: 3-row stacked layout               -->
+            <!-- ═══════════════════════════════════════════════ -->
+            <div class="grid-layout" id="page-dashboard">
 
-                <!-- Left Column (CCTV & Device Health) -->
+                <!-- ── ROW 1: CCTV (left) + Metrics & Trends (right) ── -->
                 <div class="col-left">
                     <!-- Live Camera Card -->
                     <div class="card camera-card">
@@ -94,8 +93,6 @@
                             <span class="camera-title" id="current-camera-title">CCTV 01 - Main Entry</span>
                             <button class="icon-btn"><i data-lucide="arrow-right"></i></button>
                         </div>
-
-                        <!-- Live Video Mockup -->
                         <div class="video-container">
                             <div class="cctv-overlay-info">
                                 <div class="cctv-badge inline-flex">
@@ -106,10 +103,7 @@
                                     <i data-lucide="user-check"></i> Visitor Detected
                                 </span>
                             </div>
-
-                            <!-- Bounding Boxes and Motion Simulation Canvas -->
                             <canvas id="cctv-canvas" width="640" height="360"></canvas>
-
                             <div class="camera-overlay-bottom">
                                 <div class="overlay-stats">
                                     <div class="stat-pill">
@@ -127,8 +121,6 @@
                                 </div>
                             </div>
                         </div>
-
-                        <!-- Camera Switcher -->
                         <div class="camera-switcher">
                             <button class="cam-tab active" data-cam="CAM_ENTRY_01">CAM 01 (Entry 1)</button>
                             <button class="cam-tab" data-cam="CAM_FLOOR_01">CAM 02 (Floor 1)</button>
@@ -160,7 +152,6 @@
                                     <span class="pct">95%</span>
                                 </div>
                             </div>
-
                             <div class="device-item">
                                 <div class="device-info">
                                     <i data-lucide="video" class="device-icon"></i>
@@ -176,7 +167,6 @@
                                     <span class="pct">82%</span>
                                 </div>
                             </div>
-
                             <div class="device-item">
                                 <div class="device-info">
                                     <i data-lucide="video" class="device-icon"></i>
@@ -192,7 +182,6 @@
                                     <span class="pct">91%</span>
                                 </div>
                             </div>
-
                             <div class="device-item">
                                 <div class="device-info">
                                     <i data-lucide="database" class="device-icon"></i>
@@ -203,90 +192,247 @@
                                 </div>
                                 <div class="device-health">
                                     <div class="progress-container">
-                                        <div class="progress-bar green-bar" id="db-health-bar" style="width: 100%;">
-                                        </div>
+                                        <div class="progress-bar green-bar" id="db-health-bar" style="width: 100%;"></div>
                                     </div>
                                     <span class="pct" id="db-health-pct">100%</span>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right Column: Metrics + Trends -->
+                <div class="col-right">
+                    <!-- Security Summary Grid -->
+                    <div class="metrics-grid">
+                        <div class="card metric-card">
+                            <div class="metric-header">
+                                <span class="metric-title">Unique Visitors</span>
+                                <div class="metric-icon-bg orange-light">
+                                    <i data-lucide="users" class="orange-text"></i>
+                                </div>
+                            </div>
+                            <div class="metric-body">
+                                <h2 class="metric-value" id="val-visitors">0</h2>
+                                <span class="metric-trend up">
+                                    <i data-lucide="trending-up"></i>
+                                    <span>Live feed</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card metric-card">
+                            <div class="metric-header">
+                                <span class="metric-title">Store Conversion</span>
+                                <div class="metric-icon-bg green-light">
+                                    <i data-lucide="shopping-bag" class="green-text"></i>
+                                </div>
+                            </div>
+                            <div class="metric-body">
+                                <h2 class="metric-value" id="val-conversion">0.0%</h2>
+                                <span class="metric-trend up">
+                                    <i data-lucide="trending-up"></i>
+                                    <span>Time-correlated</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card metric-card">
+                            <div class="metric-header">
+                                <span class="metric-title">Queue Depth</span>
+                                <div class="metric-icon-bg red-light" id="queue-icon-bg">
+                                    <i data-lucide="user-minus" class="red-text" id="queue-icon"></i>
+                                </div>
+                            </div>
+                            <div class="metric-body">
+                                <h2 class="metric-value" id="val-queue">0</h2>
+                                <span class="metric-trend" id="val-queue-status">
+                                    <span>Normal</span>
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card metric-card">
+                            <div class="metric-header">
+                                <span class="metric-title">Abandonment Rate</span>
+                                <div class="metric-icon-bg gray-light">
+                                    <i data-lucide="user-x" class="gray-text"></i>
+                                </div>
+                            </div>
+                            <div class="metric-body">
+                                <h2 class="metric-value" id="val-abandonment">0.0%</h2>
+                                <span class="metric-trend down">
+                                    <i data-lucide="trending-down"></i>
+                                    <span>Billing queue</span>
+                                </span>
                             </div>
                         </div>
                     </div>
 
-                    <!-- Store Floor Plan Minimap Card -->
+                    <!-- Activity Trends Chart -->
+                    <div class="card trends-card">
+                        <div class="card-header">
+                            <div class="header-titles">
+                                <h3>Activity Trends</h3>
+                                <p>Hourly unique store visitors &amp; conversion rates</p>
+                            </div>
+                            <div class="header-actions">
+                                <select class="time-select">
+                                    <option>Live Stream</option>
+                                    <option>Daily</option>
+                                    <option>Weekly</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="trends-chart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ── ROW 2: Full-width Store Floor Plan Heatmap ── -->
+                <div class="col-full">
                     <div class="card minimap-card">
                         <div class="card-header">
                             <div>
                                 <h3>Store Floor Plan</h3>
-                                <span class="minimap-subtitle">Brigade Road · ST1008 · Live Heatmap</span>
+                                <span class="minimap-subtitle">Brigade Road · ST1008 · Live Heatmap — hover any zone for traffic &amp; dwell data</span>
                             </div>
                             <span class="badge" id="minimap-confidence-badge">–</span>
                         </div>
 
                         <div class="floor-plan-wrapper">
-                            <svg id="store-floor-plan" viewBox="0 0 640 320" xmlns="http://www.w3.org/2000/svg">
+                            <svg id="store-floor-plan" viewBox="0 0 640 340" xmlns="http://www.w3.org/2000/svg">
                                 <defs>
                                     <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
                                         <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>
                                     </pattern>
                                 </defs>
-                                <rect width="640" height="320" fill="url(#grid)"/>
+                                <rect width="640" height="340" fill="url(#grid)"/>
 
-                                <!-- FOH: Front of House -->
-                                <polygon id="zone-FOH" class="floor-zone" data-zone="FOH" data-label="Front of House" data-billing="false" points="0,0 191,0 191,320 0,320"/>
-                                <text class="zone-label" x="95" y="155">F.O.H</text>
-                                <text class="zone-label" x="95" y="167" style="font-size:5px;fill:rgba(255,255,255,0.3)">Entry Area</text>
+                                <!-- FOH: Front of House / Entry Area -->
+                                <polygon id="zone-FOH" class="floor-zone" data-zone="FOH" data-label="Front of House (Entry)" data-billing="false"
+                                    points="0,0 170,0 170,340 0,340"/>
+                                <text class="zone-label" x="85" y="162">F.O.H</text>
+                                <text class="zone-label" x="85" y="174" style="font-size:4.5px;fill:rgba(255,255,255,0.3)">ENTRY AREA</text>
 
-                                <!-- TOP_AISLE -->
-                                <polygon id="zone-TOP_AISLE" class="floor-zone" data-zone="TOP_AISLE" data-label="Top Aisle" data-billing="false" points="191,0 534,0 534,88 191,88"/>
-                                <text class="zone-label" x="362" y="44">TOP AISLE</text>
+                                <!-- TOP ROW BRAND COUNTERS (8 brands × ~43px each) -->
+                                <!-- SALM -->
+                                <polygon id="zone-SALM" class="floor-zone brand-zone" data-zone="TOP_AISLE" data-label="SALM" data-billing="false"
+                                    points="170,0 213,0 213,82 170,82"/>
+                                <text class="zone-label brand-label" x="191" y="41">SALM</text>
+                                <!-- TFS -->
+                                <polygon id="zone-TFS" class="floor-zone brand-zone" data-zone="TOP_AISLE" data-label="TFS (The Face Shop)" data-billing="false"
+                                    points="213,0 256,0 256,82 213,82"/>
+                                <text class="zone-label brand-label" x="234" y="41">TFS</text>
+                                <!-- GOOD_VIBES -->
+                                <polygon id="zone-GOOD_VIBES" class="floor-zone brand-zone" data-zone="TOP_AISLE" data-label="Good Vibes" data-billing="false"
+                                    points="256,0 299,0 299,82 256,82"/>
+                                <text class="zone-label brand-label" x="277" y="36">GOOD</text>
+                                <text class="zone-label brand-label" x="277" y="47">VIBES</text>
+                                <!-- DERMDOC -->
+                                <polygon id="zone-DERMDOC" class="floor-zone brand-zone" data-zone="TOP_AISLE" data-label="DermDoc" data-billing="false"
+                                    points="299,0 342,0 342,82 299,82"/>
+                                <text class="zone-label brand-label" x="320" y="36">DERM</text>
+                                <text class="zone-label brand-label" x="320" y="47">DOC</text>
+                                <!-- MINIMALIST -->
+                                <polygon id="zone-MINIMALIST" class="floor-zone brand-zone" data-zone="TOP_AISLE" data-label="The Minimalist" data-billing="false"
+                                    points="342,0 385,0 385,82 342,82"/>
+                                <text class="zone-label brand-label" x="363" y="36">MINI</text>
+                                <text class="zone-label brand-label" x="363" y="47">MALIST</text>
+                                <!-- AQUALOGICA -->
+                                <polygon id="zone-AQUALOGICA" class="floor-zone brand-zone" data-zone="TOP_AISLE" data-label="Aqualogica" data-billing="false"
+                                    points="385,0 428,0 428,82 385,82"/>
+                                <text class="zone-label brand-label" x="406" y="36">AQUA</text>
+                                <text class="zone-label brand-label" x="406" y="47">LOGICA</text>
+                                <!-- FOXTALE -->
+                                <polygon id="zone-FOXTALE" class="floor-zone brand-zone" data-zone="TOP_AISLE" data-label="Foxtale" data-billing="false"
+                                    points="428,0 471,0 471,82 428,82"/>
+                                <text class="zone-label brand-label" x="449" y="41">FOXTALE</text>
+                                <!-- JC -->
+                                <polygon id="zone-JC" class="floor-zone brand-zone" data-zone="TOP_AISLE" data-label="JC" data-billing="false"
+                                    points="471,0 514,0 514,82 471,82"/>
+                                <text class="zone-label brand-label" x="492" y="41">JC</text>
 
-                                <!-- FRAGRANCE / NAIL -->
-                                <polygon id="zone-FRAGRANCE" class="floor-zone" data-zone="FRAGRANCE" data-label="Fragrance / Nail" data-billing="false" points="191,88 228,88 228,160 191,160"/>
-                                <text class="zone-label" x="209" y="120" style="font-size:5.5px">FRAG</text>
+                                <!-- Top aisle walkway divider -->
+                                <line x1="170" y1="82" x2="514" y2="82" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
 
-                                <!-- Corridor gap between units (visual only) -->
-                                <rect x="228" y="88" width="95" height="72" fill="#ffffff" fill-opacity="0.015" stroke="#ffffff" stroke-opacity="0.04" stroke-width="0.5"/>
-                                <text class="zone-label" x="275" y="124" style="font-size:5px;fill:rgba(255,255,255,0.18)">GAP</text>
+                                <!-- F.O.H MAKEUP UNIT (central band, y=96→244) -->
+                                <rect id="zone-MAKEUP" class="floor-zone" data-zone="MAKEUP" data-label="F.O.H Makeup Unit" data-billing="false"
+                                    x="170" y="96" width="344" height="148" rx="3"/>
+                                <text class="zone-label" x="342" y="162"
+                                    style="font-size:9px;font-weight:700;fill:rgba(210,150,255,0.92);letter-spacing:3px">F.O.H</text>
+                                <text class="zone-label" x="342" y="175"
+                                    style="font-size:6px;font-weight:600;fill:rgba(210,150,255,0.65);letter-spacing:2px">MAKEUP UNIT</text>
 
-                                <!-- MAKEUP -->
-                                <polygon id="zone-MAKEUP" class="floor-zone" data-zone="MAKEUP" data-label="Central Makeup" data-billing="false" points="323,88 391,88 391,160 323,160"/>
-                                <text class="zone-label" x="357" y="120" style="font-size:5.5px">MAKEUP</text>
+                                <!-- Bottom aisle walkway divider -->
+                                <line x1="170" y1="258" x2="514" y2="258" stroke="rgba(255,255,255,0.08)" stroke-width="1"/>
 
-                                <!-- BOTTOM_AISLE -->
-                                <polygon id="zone-BOTTOM_AISLE" class="floor-zone" data-zone="BOTTOM_AISLE" data-label="Bottom Aisle" data-billing="false" points="191,160 534,160 534,246 191,246"/>
-                                <text class="zone-label" x="362" y="203">BOTTOM AISLE</text>
-
-                                <!-- Right side filler between central zone and cash counter -->
-                                <rect x="391" y="88" width="143" height="158" fill="#ffffff" fill-opacity="0.01" stroke="#ffffff" stroke-opacity="0.04" stroke-width="0.5"/>
+                                <!-- BOTTOM ROW BRAND COUNTERS (8 brands × ~43px each) -->
+                                <!-- MAYBELLINE -->
+                                <polygon id="zone-MAYBELLINE" class="floor-zone brand-zone" data-zone="BOTTOM_AISLE" data-label="Maybelline" data-billing="false"
+                                    points="170,262 213,262 213,340 170,340"/>
+                                <text class="zone-label brand-label" x="191" y="294">MAY</text>
+                                <text class="zone-label brand-label" x="191" y="305">BELLE</text>
+                                <!-- FACES -->
+                                <polygon id="zone-FACES" class="floor-zone brand-zone" data-zone="BOTTOM_AISLE" data-label="Faces Canada" data-billing="false"
+                                    points="213,262 256,262 256,340 213,340"/>
+                                <text class="zone-label brand-label" x="234" y="301">FACES</text>
+                                <!-- LAKME -->
+                                <polygon id="zone-LAKME" class="floor-zone brand-zone" data-zone="BOTTOM_AISLE" data-label="Lakmé" data-billing="false"
+                                    points="256,262 299,262 299,340 256,340"/>
+                                <text class="zone-label brand-label" x="277" y="301">LAKME</text>
+                                <!-- MARS_NYBAE -->
+                                <polygon id="zone-MARS_NYBAE" class="floor-zone brand-zone" data-zone="BOTTOM_AISLE" data-label="Mars / NYBae" data-billing="false"
+                                    points="299,262 342,262 342,340 299,340"/>
+                                <text class="zone-label brand-label" x="320" y="294">MARS</text>
+                                <text class="zone-label brand-label" x="320" y="305">NYBAE</text>
+                                <!-- MENS_CARE -->
+                                <polygon id="zone-MENS_CARE" class="floor-zone brand-zone" data-zone="BOTTOM_AISLE" data-label="Men's Care" data-billing="false"
+                                    points="342,262 385,262 385,340 342,340"/>
+                                <text class="zone-label brand-label" x="363" y="294">MENS</text>
+                                <text class="zone-label brand-label" x="363" y="305">CARE</text>
+                                <!-- ALPS_GOODNESS -->
+                                <polygon id="zone-ALPS_GOODNESS" class="floor-zone brand-zone" data-zone="BOTTOM_AISLE" data-label="Alps Goodness" data-billing="false"
+                                    points="385,262 428,262 428,340 385,340"/>
+                                <text class="zone-label brand-label" x="406" y="294">ALPS</text>
+                                <text class="zone-label brand-label" x="406" y="305">GOOD.</text>
+                                <!-- LOREAL -->
+                                <polygon id="zone-LOREAL" class="floor-zone brand-zone" data-zone="BOTTOM_AISLE" data-label="L'Oréal" data-billing="false"
+                                    points="428,262 471,262 471,340 428,340"/>
+                                <text class="zone-label brand-label" x="449" y="301">LOREAL</text>
+                                <!-- BEAUTY_ESSENTIALS -->
+                                <polygon id="zone-BEAUTY_ESSENTIALS" class="floor-zone brand-zone" data-zone="BOTTOM_AISLE" data-label="Beauty Essentials" data-billing="false"
+                                    points="471,262 514,262 514,340 471,340"/>
+                                <text class="zone-label brand-label" x="492" y="294">BEAUTY</text>
+                                <text class="zone-label brand-label" x="492" y="305">ESSEN.</text>
 
                                 <!-- BOH: Back of House (top right) -->
-                                <polygon id="zone-BOH" class="floor-zone" data-zone="BOH" data-label="Back of House" data-billing="false" points="534,0 640,0 640,56 534,56"/>
-                                <text class="zone-label" x="587" y="28" style="font-size:5.5px">BOH</text>
+                                <polygon id="zone-BOH" class="floor-zone" data-zone="BOH" data-label="Back of House" data-billing="false"
+                                    points="514,0 640,0 640,62 514,62"/>
+                                <text class="zone-label" x="577" y="31" style="font-size:5.5px">BOH</text>
 
                                 <!-- CASH_COUNTER: Billing zone -->
-                                <polygon id="zone-CASH_COUNTER" class="floor-zone billing-zone" data-zone="CASH_COUNTER" data-label="Cash Counter" data-billing="true" points="534,56 640,56 640,221 534,221"/>
-                                <text class="zone-label billing-label" x="587" y="130" style="font-size:5.5px">CASH</text>
-                                <text class="zone-label billing-label" x="587" y="141" style="font-size:5px">COUNTER</text>
+                                <polygon id="zone-CASH_COUNTER" class="floor-zone billing-zone" data-zone="CASH_COUNTER" data-label="Cash Counter / Billing" data-billing="true"
+                                    points="514,62 640,62 640,240 514,240"/>
+                                <text class="zone-label billing-label" x="577" y="144" style="font-size:6px">CASH</text>
+                                <text class="zone-label billing-label" x="577" y="156" style="font-size:5px">COUNTER</text>
 
                                 <!-- Bottom right filler -->
-                                <rect x="534" y="221" width="106" height="99" fill="#ffffff" fill-opacity="0.01" stroke="#ffffff" stroke-opacity="0.04" stroke-width="0.5"/>
+                                <rect x="514" y="240" width="126" height="100" fill="rgba(255,255,255,0.005)" stroke="rgba(255,255,255,0.04)" stroke-width="0.5"/>
 
                                 <!-- Entry threshold line -->
-                                <line class="entry-line" x1="191" y1="0" x2="191" y2="320"/>
-                                <text class="entry-label" transform="translate(186,315) rotate(-90)">ENTRY THRESHOLD</text>
+                                <line class="entry-line" x1="170" y1="0" x2="170" y2="340"/>
+                                <text class="entry-label" transform="translate(165,335) rotate(-90)">ENTRY THRESHOLD</text>
 
                                 <!-- Camera markers -->
                                 <circle class="camera-dot" cx="8" cy="8" r="3" opacity="0.7"/>
                                 <text style="fill:rgba(139,92,246,0.7);font-family:Outfit;font-size:5px;font-weight:700" x="14" y="11">CAM 01</text>
-                                <circle class="camera-dot" cx="300" cy="8" r="3" opacity="0.7"/>
-                                <text style="fill:rgba(139,92,246,0.7);font-family:Outfit;font-size:5px;font-weight:700" x="306" y="11">CAM 02</text>
-                                <circle class="camera-dot" cx="587" cy="10" r="3" opacity="0.7"/>
-                                <text style="fill:rgba(139,92,246,0.7);font-family:Outfit;font-size:5px;font-weight:700" x="540" y="11">CAM 03</text>
-                                <circle class="camera-dot" cx="300" cy="312" r="3" opacity="0.7"/>
-                                <text style="fill:rgba(139,92,246,0.7);font-family:Outfit;font-size:5px;font-weight:700" x="306" y="315">CAM 04</text>
-                                <circle class="camera-dot" cx="8" cy="312" r="3" opacity="0.7"/>
-                                <text style="fill:rgba(139,92,246,0.7);font-family:Outfit;font-size:5px;font-weight:700" x="14" y="315">CAM 05</text>
+                                <circle class="camera-dot" cx="342" cy="8" r="3" opacity="0.7"/>
+                                <text style="fill:rgba(139,92,246,0.7);font-family:Outfit;font-size:5px;font-weight:700" x="348" y="11">CAM 02</text>
+                                <circle class="camera-dot" cx="577" cy="10" r="3" opacity="0.7"/>
+                                <text style="fill:rgba(139,92,246,0.7);font-family:Outfit;font-size:5px;font-weight:700" x="525" y="11">CAM 03</text>
+                                <circle class="camera-dot" cx="342" cy="332" r="3" opacity="0.7"/>
+                                <text style="fill:rgba(139,92,246,0.7);font-family:Outfit;font-size:5px;font-weight:700" x="348" y="335">CAM 04</text>
+                                <circle class="camera-dot" cx="8" cy="332" r="3" opacity="0.7"/>
+                                <text style="fill:rgba(139,92,246,0.7);font-family:Outfit;font-size:5px;font-weight:700" x="14" y="335">CAM 05</text>
 
                                 <!-- Live visitor blips injected by JS -->
                                 <g id="visitor-blips-layer"></g>
@@ -302,6 +448,10 @@
                                 <div class="zt-row">
                                     <span class="zt-key">Avg Dwell</span>
                                     <span class="zt-val" id="zt-dwell">–</span>
+                                </div>
+                                <div class="zt-row" id="zt-products-row" style="display:none">
+                                    <span class="zt-key">Zone</span>
+                                    <span class="zt-val" id="zt-products" style="font-size:9px;color:#a78bfa">–</span>
                                 </div>
                             </div>
                         </div>
@@ -320,100 +470,8 @@
                     </div>
                 </div>
 
-                <!-- Right Column (Security Summary & Trends & Funnel) -->
-                <div class="col-right">
-
-                    <!-- Security Summary Grid -->
-                    <div class="metrics-grid">
-                        <!-- Metric Card 1: Unique Visitors -->
-                        <div class="card metric-card">
-                            <div class="metric-header">
-                                <span class="metric-title">Unique Visitors</span>
-                                <div class="metric-icon-bg orange-light">
-                                    <i data-lucide="users" class="orange-text"></i>
-                                </div>
-                            </div>
-                            <div class="metric-body">
-                                <h2 class="metric-value" id="val-visitors">0</h2>
-                                <span class="metric-trend up">
-                                    <i data-lucide="trending-up"></i>
-                                    <span>Live feed</span>
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Metric Card 2: Conversion Rate -->
-                        <div class="card metric-card">
-                            <div class="metric-header">
-                                <span class="metric-title">Store Conversion</span>
-                                <div class="metric-icon-bg green-light">
-                                    <i data-lucide="shopping-bag" class="green-text"></i>
-                                </div>
-                            </div>
-                            <div class="metric-body">
-                                <h2 class="metric-value" id="val-conversion">0.0%</h2>
-                                <span class="metric-trend up">
-                                    <i data-lucide="trending-up"></i>
-                                    <span>Time-correlated</span>
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Metric Card 3: Queue Depth -->
-                        <div class="card metric-card">
-                            <div class="metric-header">
-                                <span class="metric-title">Queue Depth</span>
-                                <div class="metric-icon-bg red-light" id="queue-icon-bg">
-                                    <i data-lucide="user-minus" class="red-text" id="queue-icon"></i>
-                                </div>
-                            </div>
-                            <div class="metric-body">
-                                <h2 class="metric-value" id="val-queue">0</h2>
-                                <span class="metric-trend" id="val-queue-status">
-                                    <span>Normal</span>
-                                </span>
-                            </div>
-                        </div>
-
-                        <!-- Metric Card 4: Abandonment Rate -->
-                        <div class="card metric-card">
-                            <div class="metric-header">
-                                <span class="metric-title">Abandonment Rate</span>
-                                <div class="metric-icon-bg gray-light">
-                                    <i data-lucide="user-x" class="gray-text"></i>
-                                </div>
-                            </div>
-                            <div class="metric-body">
-                                <h2 class="metric-value" id="val-abandonment">0.0%</h2>
-                                <span class="metric-trend down">
-                                    <i data-lucide="trending-down"></i>
-                                    <span>Billing queue</span>
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Activity Trends (Chart) -->
-                    <div class="card trends-card">
-                        <div class="card-header">
-                            <div class="header-titles">
-                                <h3>Activity Trends</h3>
-                                <p>Hourly unique store visitors & conversion rates</p>
-                            </div>
-                            <div class="header-actions">
-                                <select class="time-select">
-                                    <option>Live Stream</option>
-                                    <option>Daily</option>
-                                    <option>Weekly</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="chart-container">
-                            <canvas id="trends-chart"></canvas>
-                        </div>
-                    </div>
-
-                    <!-- Anomalies & Conversion Funnel Grid -->
+                <!-- ── ROW 3: Funnel + Anomalies ── -->
+                <div class="col-full">
                     <div class="bottom-split-grid">
 
                         <!-- Conversion Funnel Card -->
@@ -433,7 +491,6 @@
                                     </div>
                                     <span class="stage-drop">100% baseline</span>
                                 </div>
-
                                 <div class="funnel-stage-item" id="stage-zone">
                                     <div class="stage-info">
                                         <span class="stage-name">2. Product Zones Visit</span>
@@ -444,7 +501,6 @@
                                     </div>
                                     <span class="stage-drop">-0% drop-off</span>
                                 </div>
-
                                 <div class="funnel-stage-item" id="stage-queue">
                                     <div class="stage-info">
                                         <span class="stage-name">3. Billing Counter Queue</span>
@@ -455,7 +511,6 @@
                                     </div>
                                     <span class="stage-drop">-0% drop-off</span>
                                 </div>
-
                                 <div class="funnel-stage-item" id="stage-purchase">
                                     <div class="stage-info">
                                         <span class="stage-name">4. Successful Purchase</span>
@@ -487,6 +542,406 @@
                 </div>
 
             </div>
+
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!--  CAMERAS PAGE                                                   -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <div id="page-cameras" class="page-panel" style="display:none">
+
+                <!-- Page Header -->
+                <div class="page-panel-header">
+                    <div>
+                        <h2>Camera Analytics</h2>
+                        <p class="subtitle">Per-camera detection rates, confidence scores &amp; event logs — Brigade Road ST1008</p>
+                    </div>
+                    <div style="display:flex;gap:10px;align-items:center">
+                        <span class="status-indicator-pill online" style="height:32px">
+                            <span class="pulse-dot"></span>
+                            <span id="cam-page-live-count">5 / 5 Online</span>
+                        </span>
+                        <button class="btn btn-primary" id="cam-export-btn" style="height:32px;font-size:12px">
+                            <i data-lucide="download" style="width:14px;height:14px"></i> Export Log
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Camera Grid (5 cameras) -->
+                <div class="cam-grid">
+
+                    <!-- CAM 01 -->
+                    <div class="cam-card" data-cam-id="CAM_ENTRY_01">
+                        <div class="cam-card-header">
+                            <div class="cam-status-row">
+                                <span class="cam-dot online-dot"></span>
+                                <span class="cam-id">CAM 01</span>
+                                <span class="cam-loc">Main Entry</span>
+                            </div>
+                            <span class="cam-res">1080p · 15fps</span>
+                        </div>
+                        <div class="cam-preview" id="cam-preview-CAM_ENTRY_01">
+                            <canvas class="cam-mini-canvas" id="mini-canvas-CAM_ENTRY_01" width="320" height="180"></canvas>
+                            <div class="cam-overlay-badge"><i data-lucide="activity" style="width:10px;height:10px"></i> LIVE</div>
+                        </div>
+                        <div class="cam-stats-grid">
+                            <div class="cam-stat">
+                                <span class="cam-stat-label">Detections Today</span>
+                                <span class="cam-stat-val" id="cs-det-CAM_ENTRY_01">—</span>
+                            </div>
+                            <div class="cam-stat">
+                                <span class="cam-stat-label">Avg Confidence</span>
+                                <span class="cam-stat-val" id="cs-conf-CAM_ENTRY_01">—</span>
+                            </div>
+                            <div class="cam-stat">
+                                <span class="cam-stat-label">Entry Events</span>
+                                <span class="cam-stat-val" id="cs-entry-CAM_ENTRY_01">—</span>
+                            </div>
+                            <div class="cam-stat">
+                                <span class="cam-stat-label">Uptime</span>
+                                <span class="cam-stat-val green-text" id="cs-uptime-CAM_ENTRY_01">99.8%</span>
+                            </div>
+                        </div>
+                        <div class="cam-confidence-bar-wrap">
+                            <div class="cam-conf-label">Model Confidence</div>
+                            <div class="cam-conf-track"><div class="cam-conf-fill" id="cs-bar-CAM_ENTRY_01" style="width:0%"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- CAM 02 -->
+                    <div class="cam-card" data-cam-id="CAM_FLOOR_01">
+                        <div class="cam-card-header">
+                            <div class="cam-status-row">
+                                <span class="cam-dot online-dot"></span>
+                                <span class="cam-id">CAM 02</span>
+                                <span class="cam-loc">Main Floor</span>
+                            </div>
+                            <span class="cam-res">1080p · 15fps</span>
+                        </div>
+                        <div class="cam-preview">
+                            <canvas class="cam-mini-canvas" id="mini-canvas-CAM_FLOOR_01" width="320" height="180"></canvas>
+                            <div class="cam-overlay-badge"><i data-lucide="activity" style="width:10px;height:10px"></i> LIVE</div>
+                        </div>
+                        <div class="cam-stats-grid">
+                            <div class="cam-stat">
+                                <span class="cam-stat-label">Detections Today</span>
+                                <span class="cam-stat-val" id="cs-det-CAM_FLOOR_01">—</span>
+                            </div>
+                            <div class="cam-stat">
+                                <span class="cam-stat-label">Avg Confidence</span>
+                                <span class="cam-stat-val" id="cs-conf-CAM_FLOOR_01">—</span>
+                            </div>
+                            <div class="cam-stat">
+                                <span class="cam-stat-label">Zone Coverage</span>
+                                <span class="cam-stat-val" id="cs-entry-CAM_FLOOR_01">—</span>
+                            </div>
+                            <div class="cam-stat">
+                                <span class="cam-stat-label">Uptime</span>
+                                <span class="cam-stat-val green-text" id="cs-uptime-CAM_FLOOR_01">97.2%</span>
+                            </div>
+                        </div>
+                        <div class="cam-confidence-bar-wrap">
+                            <div class="cam-conf-label">Model Confidence</div>
+                            <div class="cam-conf-track"><div class="cam-conf-fill" id="cs-bar-CAM_FLOOR_01" style="width:0%"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- CAM 03 -->
+                    <div class="cam-card" data-cam-id="CAM_BILLING_01">
+                        <div class="cam-card-header">
+                            <div class="cam-status-row">
+                                <span class="cam-dot online-dot"></span>
+                                <span class="cam-id">CAM 03</span>
+                                <span class="cam-loc">Cash Counter</span>
+                            </div>
+                            <span class="cam-res">1080p · 25fps</span>
+                        </div>
+                        <div class="cam-preview">
+                            <canvas class="cam-mini-canvas" id="mini-canvas-CAM_BILLING_01" width="320" height="180"></canvas>
+                            <div class="cam-overlay-badge" style="background:rgba(255,107,53,0.85)"><i data-lucide="zap" style="width:10px;height:10px"></i> BILLING</div>
+                        </div>
+                        <div class="cam-stats-grid">
+                            <div class="cam-stat">
+                                <span class="cam-stat-label">Detections Today</span>
+                                <span class="cam-stat-val" id="cs-det-CAM_BILLING_01">—</span>
+                            </div>
+                            <div class="cam-stat">
+                                <span class="cam-stat-label">Avg Confidence</span>
+                                <span class="cam-stat-val" id="cs-conf-CAM_BILLING_01">—</span>
+                            </div>
+                            <div class="cam-stat">
+                                <span class="cam-stat-label">Queue Events</span>
+                                <span class="cam-stat-val" id="cs-entry-CAM_BILLING_01">—</span>
+                            </div>
+                            <div class="cam-stat">
+                                <span class="cam-stat-label">Uptime</span>
+                                <span class="cam-stat-val green-text" id="cs-uptime-CAM_BILLING_01">100%</span>
+                            </div>
+                        </div>
+                        <div class="cam-confidence-bar-wrap">
+                            <div class="cam-conf-label">Model Confidence</div>
+                            <div class="cam-conf-track"><div class="cam-conf-fill" id="cs-bar-CAM_BILLING_01" style="width:0%"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- CAM 04 -->
+                    <div class="cam-card" data-cam-id="CAM_FLOOR_02">
+                        <div class="cam-card-header">
+                            <div class="cam-status-row">
+                                <span class="cam-dot online-dot"></span>
+                                <span class="cam-id">CAM 04</span>
+                                <span class="cam-loc">Floor 2 / Makeup</span>
+                            </div>
+                            <span class="cam-res">720p · 15fps</span>
+                        </div>
+                        <div class="cam-preview">
+                            <canvas class="cam-mini-canvas" id="mini-canvas-CAM_FLOOR_02" width="320" height="180"></canvas>
+                            <div class="cam-overlay-badge"><i data-lucide="activity" style="width:10px;height:10px"></i> LIVE</div>
+                        </div>
+                        <div class="cam-stats-grid">
+                            <div class="cam-stat">
+                                <span class="cam-stat-label">Detections Today</span>
+                                <span class="cam-stat-val" id="cs-det-CAM_FLOOR_02">—</span>
+                            </div>
+                            <div class="cam-stat">
+                                <span class="cam-stat-label">Avg Confidence</span>
+                                <span class="cam-stat-val" id="cs-conf-CAM_FLOOR_02">—</span>
+                            </div>
+                            <div class="cam-stat">
+                                <span class="cam-stat-label">Dwell Triggers</span>
+                                <span class="cam-stat-val" id="cs-entry-CAM_FLOOR_02">—</span>
+                            </div>
+                            <div class="cam-stat">
+                                <span class="cam-stat-label">Uptime</span>
+                                <span class="cam-stat-val orange-text" id="cs-uptime-CAM_FLOOR_02">88.5%</span>
+                            </div>
+                        </div>
+                        <div class="cam-confidence-bar-wrap">
+                            <div class="cam-conf-label">Model Confidence</div>
+                            <div class="cam-conf-track"><div class="cam-conf-fill" id="cs-bar-CAM_FLOOR_02" style="width:0%"></div></div>
+                        </div>
+                    </div>
+
+                    <!-- CAM 05 -->
+                    <div class="cam-card" data-cam-id="CAM_ENTRY_02">
+                        <div class="cam-card-header">
+                            <div class="cam-status-row">
+                                <span class="cam-dot online-dot"></span>
+                                <span class="cam-id">CAM 05</span>
+                                <span class="cam-loc">Side Entry / Exit</span>
+                            </div>
+                            <span class="cam-res">1080p · 15fps</span>
+                        </div>
+                        <div class="cam-preview">
+                            <canvas class="cam-mini-canvas" id="mini-canvas-CAM_ENTRY_02" width="320" height="180"></canvas>
+                            <div class="cam-overlay-badge"><i data-lucide="activity" style="width:10px;height:10px"></i> LIVE</div>
+                        </div>
+                        <div class="cam-stats-grid">
+                            <div class="cam-stat">
+                                <span class="cam-stat-label">Detections Today</span>
+                                <span class="cam-stat-val" id="cs-det-CAM_ENTRY_02">—</span>
+                            </div>
+                            <div class="cam-stat">
+                                <span class="cam-stat-label">Avg Confidence</span>
+                                <span class="cam-stat-val" id="cs-conf-CAM_ENTRY_02">—</span>
+                            </div>
+                            <div class="cam-stat">
+                                <span class="cam-stat-label">Exit Events</span>
+                                <span class="cam-stat-val" id="cs-entry-CAM_ENTRY_02">—</span>
+                            </div>
+                            <div class="cam-stat">
+                                <span class="cam-stat-label">Uptime</span>
+                                <span class="cam-stat-val green-text" id="cs-uptime-CAM_ENTRY_02">99.1%</span>
+                            </div>
+                        </div>
+                        <div class="cam-confidence-bar-wrap">
+                            <div class="cam-conf-label">Model Confidence</div>
+                            <div class="cam-conf-track"><div class="cam-conf-fill" id="cs-bar-CAM_ENTRY_02" style="width:0%"></div></div>
+                        </div>
+                    </div>
+
+                </div><!-- end cam-grid -->
+
+                <!-- Live Event Log -->
+                <div class="card" style="margin-top:28px">
+                    <div class="card-header">
+                        <div>
+                            <h3>Live Detection Event Log</h3>
+                            <p style="font-size:12px;color:var(--text-muted);margin-top:2px">Real-time stream of visitor detection &amp; zone events across all cameras</p>
+                        </div>
+                        <div style="display:flex;gap:8px">
+                            <select class="time-select" id="cam-log-filter">
+                                <option value="all">All Cameras</option>
+                                <option value="CAM_ENTRY_01">CAM 01 - Entry</option>
+                                <option value="CAM_FLOOR_01">CAM 02 - Floor</option>
+                                <option value="CAM_BILLING_01">CAM 03 - Billing</option>
+                                <option value="CAM_FLOOR_02">CAM 04 - Makeup</option>
+                                <option value="CAM_ENTRY_02">CAM 05 - Exit</option>
+                            </select>
+                            <button class="btn btn-secondary" id="cam-log-clear" style="font-size:11px">Clear</button>
+                        </div>
+                    </div>
+                    <div class="event-log-table-wrap">
+                        <table class="event-log-table">
+                            <thead>
+                                <tr>
+                                    <th>Time</th>
+                                    <th>Camera</th>
+                                    <th>Event Type</th>
+                                    <th>Visitor ID</th>
+                                    <th>Zone</th>
+                                    <th>Confidence</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody id="event-log-body">
+                                <tr class="log-placeholder">
+                                    <td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px">
+                                        <i data-lucide="loader" style="width:16px;height:16px;margin-right:6px;vertical-align:middle"></i>
+                                        Waiting for live events...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div><!-- end page-cameras -->
+
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <!--  ANALYTICS PAGE                                                -->
+            <!-- ═══════════════════════════════════════════════════════════════ -->
+            <div id="page-analytics" class="page-panel" style="display:none">
+
+                <div class="page-panel-header">
+                    <div>
+                        <h2>Store Analytics</h2>
+                        <p class="subtitle">Zone performance, brand traffic rankings &amp; conversion intelligence — Brigade Road ST1008</p>
+                    </div>
+                    <select class="time-select" id="analytics-period">
+                        <option>Today</option>
+                        <option>This Week</option>
+                        <option>This Month</option>
+                    </select>
+                </div>
+
+                <!-- KPI Row -->
+                <div class="analytics-kpi-row">
+                    <div class="card analytics-kpi-card">
+                        <div class="akpi-icon" style="background:rgba(255,107,53,0.12)"><i data-lucide="users" style="color:#ff6b35"></i></div>
+                        <div class="akpi-body">
+                            <span class="akpi-label">Total Footfall</span>
+                            <span class="akpi-val" id="akpi-footfall">—</span>
+                            <span class="akpi-sub">unique visitors today</span>
+                        </div>
+                    </div>
+                    <div class="card analytics-kpi-card">
+                        <div class="akpi-icon" style="background:rgba(16,185,129,0.12)"><i data-lucide="shopping-bag" style="color:#10b981"></i></div>
+                        <div class="akpi-body">
+                            <span class="akpi-label">Conversion Rate</span>
+                            <span class="akpi-val" id="akpi-conv">—</span>
+                            <span class="akpi-sub">visitors → purchasers</span>
+                        </div>
+                    </div>
+                    <div class="card analytics-kpi-card">
+                        <div class="akpi-icon" style="background:rgba(139,92,246,0.12)"><i data-lucide="clock" style="color:#8b5cf6"></i></div>
+                        <div class="akpi-body">
+                            <span class="akpi-label">Avg Dwell Time</span>
+                            <span class="akpi-val" id="akpi-dwell">—</span>
+                            <span class="akpi-sub">across all zones</span>
+                        </div>
+                    </div>
+                    <div class="card analytics-kpi-card">
+                        <div class="akpi-icon" style="background:rgba(245,158,11,0.12)"><i data-lucide="map-pin" style="color:#f59e0b"></i></div>
+                        <div class="akpi-body">
+                            <span class="akpi-label">Peak Zone</span>
+                            <span class="akpi-val" id="akpi-peak" style="font-size:16px">—</span>
+                            <span class="akpi-sub">highest traffic area</span>
+                        </div>
+                    </div>
+                    <div class="card analytics-kpi-card">
+                        <div class="akpi-icon" style="background:rgba(239,68,68,0.12)"><i data-lucide="user-x" style="color:#ef4444"></i></div>
+                        <div class="akpi-body">
+                            <span class="akpi-label">Abandonment</span>
+                            <span class="akpi-val" id="akpi-abandon">—</span>
+                            <span class="akpi-sub">left without purchase</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="analytics-charts-row">
+
+                    <!-- Zone Dwell Time Bar Chart -->
+                    <div class="card analytics-chart-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Zone Dwell Time</h3>
+                                <p style="font-size:12px;color:var(--text-muted)">Average seconds visitors spend per zone</p>
+                            </div>
+                        </div>
+                        <div style="height:260px;position:relative">
+                            <canvas id="chart-zone-dwell"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Hourly Footfall Line Chart -->
+                    <div class="card analytics-chart-card">
+                        <div class="card-header">
+                            <div>
+                                <h3>Hourly Footfall</h3>
+                                <p style="font-size:12px;color:var(--text-muted)">Visitor arrivals by hour of day</p>
+                            </div>
+                        </div>
+                        <div style="height:260px;position:relative">
+                            <canvas id="chart-hourly-footfall"></canvas>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Bottom Row -->
+                <div class="analytics-bottom-row">
+
+                    <!-- Brand Traffic Ranking -->
+                    <div class="card" style="flex:1.4">
+                        <div class="card-header">
+                            <h3>Brand Traffic Ranking</h3>
+                            <span class="badge">By Zone Visits</span>
+                        </div>
+                        <div class="brand-rank-list" id="brand-rank-list">
+                            <!-- Filled by JS -->
+                        </div>
+                    </div>
+
+                    <!-- Conversion Donut -->
+                    <div class="card" style="flex:0.8;display:flex;flex-direction:column">
+                        <div class="card-header">
+                            <h3>Conversion Split</h3>
+                        </div>
+                        <div style="height:200px;position:relative;margin:auto 0">
+                            <canvas id="chart-conv-donut"></canvas>
+                        </div>
+                        <div class="donut-legend" id="donut-legend">
+                            <div class="dl-item"><span class="dl-dot" style="background:#10b981"></span><span>Converted</span></div>
+                            <div class="dl-item"><span class="dl-dot" style="background:#ff6b35"></span><span>Browsed Only</span></div>
+                            <div class="dl-item"><span class="dl-dot" style="background:#ef4444"></span><span>Abandoned</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Camera Detection Summary -->
+                    <div class="card" style="flex:0.9">
+                        <div class="card-header">
+                            <h3>Detection Summary</h3>
+                            <span class="badge">Per Camera</span>
+                        </div>
+                        <div class="cam-detection-summary" id="cam-detection-summary">
+                            <!-- Filled by JS -->
+                        </div>
+                    </div>
+
+                </div>
+
+            </div><!-- end page-analytics -->
+
         </main>
     </div>
 
